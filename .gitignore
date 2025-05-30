@@ -1,0 +1,30 @@
+
+---
+
+## `.gitignore` – mẫu cho project Python có `.venv`
+
+```gitignore
+# Ignore virtual environment
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VSCode settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and misc
+*.log
+
+# Ignore requirements auto-generated lock file (optional)
+pipfile.lock
+poetry.lock
