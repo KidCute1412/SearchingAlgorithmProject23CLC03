@@ -3,11 +3,11 @@ import utils.global_settings as glb
 import utils.load_resources as load_res
 import algorithms.Algorithms as algos
 import algorithms.DFS as DFS
-
-
-
-
-
+import algorithms.BDS as BDS
+import algorithms.Astar as Astar
+import algorithms.BFS as BFS
+import algorithms.Beam as BS
+import algorithms.IDAstar as IDAstar
 
 class algorithm_scene(bg.background):
     def __init__(self):
@@ -29,20 +29,20 @@ class algorithm_scene(bg.background):
     def set_algorithm(self):
         if glb.selected_algorithm == 'DFS':
             self.algorithm = DFS.DFS()
-        # elif glb.selected_algorithm == 'BFS':
-        #     self.algorithm = algos.BFS_algorithm(self.map_data)
-        # elif glb.selected_algorithm == 'A*':
-        #     self.algorithm = algos.AStar_algorithm(self.map_data)
-        # elif glb.selected_algorithm == 'Beam Search':
-        #     self.algorithm = algos.BeamSearch_algorithm(self.map_data)
+        elif glb.selected_algorithm == 'BFS':
+            self.algorithm = BFS.BFS()
+        elif glb.selected_algorithm == 'A*':
+            self.algorithm = Astar.AStar()
+        elif glb.selected_algorithm == 'Beam Search':
+            self.algorithm = BS.BS()
         # elif glb.selected_algorithm == 'IDDFS':
         #     self.algorithm = algos.IDDFS_algorithm(self.map_data)
         # elif glb.selected_algorithm == 'UCS':
         #     self.algorithm = algos.UCS_algorithm(self.map_data)
-        # elif glb.selected_algorithm == 'Bi-Directional Search':
-        #     self.algorithm = algos.BiDirectionalSearch_algorithm(self.map_data)
-        # elif glb.selected_algorithm == 'IDA*':
-        #     self.algorithm = algos.IDAStar_algorithm(self.map_data)  
+        elif glb.selected_algorithm == 'Bi-Directional Search':
+            self.algorithm = BDS.BDS()
+        elif glb.selected_algorithm == 'IDA*':
+            self.algorithm = IDAstar.IDAStar() 
 
     def draw_map(self):
         if not self.map_data:
@@ -75,7 +75,7 @@ class algorithm_scene(bg.background):
 
     def draw_buttons(self):
         rect1_place = (glb.DEFAULT_SIZE[0] // 2 - 100, 0, 200, 50)
-        text1 = "Start DFS"
+        text1 = "Start " + glb.selected_algorithm
         rect2_place = (glb.DEFAULT_SIZE[0] - 200, 0, 200, 50)
         text2 = "Exit Game"
         rect1 = bg.pygame.Rect(rect1_place)
@@ -103,14 +103,25 @@ class algorithm_scene(bg.background):
         return 'algorithm_scene'        
     
     def render_algorithm(self, screen):
-        for state in self.algorithm.visited_nodes:
-            bg.pygame.draw.rect(screen, (255, 100, 100), (self.base_x + state[1] * self.cell_size,
-                                                     self.base_y + state[0] * self.cell_size,
-                                                     self.cell_size, self.cell_size))
-            
+    # Render start search visited nodes
+        for state in self.algorithm.visited_start:
+            bg.pygame.draw.rect(screen, (255, 150, 150),  # Light red
+                                (self.base_x + state[1] * self.cell_size,
+                                self.base_y + state[0] * self.cell_size,
+                                self.cell_size, self.cell_size))
+        
+        # Render goal search visited nodes
+        for state in self.algorithm.visited_goal:
+            bg.pygame.draw.rect(screen, (150, 150, 255),  # Light blue
+                                (self.base_x + state[1] * self.cell_size,
+                                self.base_y + state[0] * self.cell_size,
+                                self.cell_size, self.cell_size))
+        
+        # Render final path
         if self.algorithm.path:
             for state in self.algorithm.path:
-                bg.pygame.draw.rect(screen, (100, 255, 100), (self.base_x + state[1] * self.cell_size,
-                                                         self.base_y + state[0] * self.cell_size,
-                                                         self.cell_size, self.cell_size))
+                bg.pygame.draw.rect(screen, (100, 255, 100),  # Green
+                                    (self.base_x + state[1] * self.cell_size,
+                                    self.base_y + state[0] * self.cell_size,
+                                    self.cell_size, self.cell_size))
                     

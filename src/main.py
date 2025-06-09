@@ -1,4 +1,3 @@
-
 import utils.global_settings as glb
 import utils.load_resources as load_res
 import scenes.background as bg
@@ -6,13 +5,6 @@ import scenes.welcome_scene as welcome
 import scenes.select_map_scene as select_map_scene
 import scenes.select_algorithm_scene as select_algorithm_scene
 import scenes.algorithm_scene as algorithm_scene
-
-
-
-
-
-
-
 
 class Game:
     def __init__(self):
@@ -44,9 +36,6 @@ class Game:
         if next_scene == 'algorithm_scene':
             bg.current_scene = 'algorithm_scene'
             self.current_scene = algorithm_scene.algorithm_scene()   
-        # if next_scene == 'DFS_algorithm':
-        #     bg.current_scene = 'DFS_algorithm'   
-        #     self.current_scene = DFS.DFS_algorithm("Picture/Map.txt") 
         if next_scene == 'exit':
             bg.pygame.quit()
     

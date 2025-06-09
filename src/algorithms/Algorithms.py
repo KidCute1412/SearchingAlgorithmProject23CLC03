@@ -15,7 +15,8 @@ class searching_algorithms:
             raise ValueError("Maze data is empty. Please load a valid maze.")
         self.start_node = self.maze.start
         self.end_node = self.maze.end
-        self.visited_nodes = set()
+        self.visited_start = set()
+        self.visited_goal = set()
         self.stack = []
         self.path = []
         self.running = False

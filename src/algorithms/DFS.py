@@ -18,10 +18,10 @@ class DFS(algos.searching_algorithms):
         if not self.stack or not self.running:
             return
         current_node = self.stack.pop()
-        if current_node.state in self.visited_nodes:
+        if current_node.state in self.visited_start:
             return
         bg.pygame.time.delay(100)  # Add a delay to visualize the DFS process
-        self.visited_nodes.add(current_node.state)
+        self.visited_start.add(current_node.state)
 
         # found goal
         if self.maze.is_goal_state(current_node.state):
@@ -31,7 +31,7 @@ class DFS(algos.searching_algorithms):
             
         
         for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):
-            if neighbor not in self.visited_nodes:
+            if neighbor not in self.visited_start:
                 self.stack.append(node.Node(neighbor, current_node))
         
 

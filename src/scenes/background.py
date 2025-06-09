@@ -21,7 +21,6 @@ scenes = [
     "select_map_scene",
     "select_algorithm_scene",
     "algorithm_scene",
-    "DFS_algorithm",
     "exit",
 ]
 class background:

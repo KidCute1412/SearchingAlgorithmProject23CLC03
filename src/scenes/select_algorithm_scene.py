@@ -26,13 +26,13 @@ class select_algorithm_scene(bg.background):
         rect4_place = (glb.DEFAULT_SIZE[0] // 2 - 400, glb.DEFAULT_SIZE[1] // 2 + 200, button_width, button_height)
         text4 = "Beam Search"
         rect5_place = (glb.DEFAULT_SIZE[0] // 2 + 200, glb.DEFAULT_SIZE[1] // 2 - 200, button_width, button_height)
-        text5 = 'IDDFS'
+        text5 = "IDDFS"
         rect6_place = (glb.DEFAULT_SIZE[0] // 2 + 200, glb.DEFAULT_SIZE[1] // 2 - 100, button_width, button_height)
-        text6 = 'UCS'
+        text6 = "UCS"
         rect7_place = (glb.DEFAULT_SIZE[0] // 2 + 200, glb.DEFAULT_SIZE[1] // 2 + 100, button_width, button_height)
-        text7 = 'Bi-Directional Search'
+        text7 = "Bi-Directional Search"
         rect8_place = (glb.DEFAULT_SIZE[0] // 2 + 200, glb.DEFAULT_SIZE[1] // 2 + 200, button_width, button_height)
-        text8 = 'IDA*'
+        text8 = "IDA*"
         
         rect9_place = (glb.DEFAULT_SIZE[0] - button_width, 0, button_width, button_height)
         text9 = "Back to Menu"
