@@ -12,7 +12,7 @@ class USC(algos.searching_algorithms):
     def start(self):
         super().start()
         start_state = self.maze.initial_state()
-        start_node = node.Node(state=start_state, path_cost=0)
+        start_node = node.Node(state = start_state, path_cost = 0)
         heapq.heappush(self.pq, (start_node.path_cost, start_node))
         self.cost_so_far[start_state] = 0
 
