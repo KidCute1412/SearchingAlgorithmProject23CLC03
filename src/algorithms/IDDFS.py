@@ -7,16 +7,15 @@ import scenes.background as bg
 class IDDFS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
-        self.depth_limit = 0  # current depth
-        self.stack = []
+        self.depth_limit = 0  # current depth limit
 
     def start(self):
         super().start()
-        self.depth_limit = 0  # start from 0 level
+        self.depth_limit = 0  # start from level 0
         self.reset_iteration()
 
     def reset_iteration(self):
-        self.stack = [node.Node(self.maze.initial_state(), depth=0)]
+        self.stack = [node.Node(self.maze.initial_state(), depth = 0)]
         self.visited_nodes = set()
 
     def step(self):
