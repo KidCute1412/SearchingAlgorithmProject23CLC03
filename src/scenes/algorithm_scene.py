@@ -74,16 +74,33 @@ class algorithm_scene(bg.background):
                 bg.pygame.draw.rect(screen, (0, 0, 0), rect, 1)
 
     def draw_buttons(self):
-        rect1_place = (glb.DEFAULT_SIZE[0] // 2 - 100, 0, 200, 50)
+    # Create font object
+        font = bg.pygame.font.SysFont(None, 30)  # Adjust font size as needed
+        
+        # Calculate text sizes
         text1 = "Start " + glb.selected_algorithm
-        rect2_place = (glb.DEFAULT_SIZE[0] - 200, 0, 200, 50)
         text2 = "Exit Game"
+        
+        # Render text surfaces to measure their sizes
+        text1_surface = font.render(text1, True, (0, 0, 0))
+        text2_surface = font.render(text2, True, (0, 0, 0))
+        
+        # Add padding to text dimensions (20 pixels on each side)
+        button1_width = text1_surface.get_width() + 80
+        button2_width = text2_surface.get_width() + 80
+        button_height = 50  # Fixed height
+        
+        # Position buttons
+        rect1_place = (glb.DEFAULT_SIZE[0] // 2 - button1_width // 2, 0, button1_width, button_height)
+        rect2_place = (glb.DEFAULT_SIZE[0] - button2_width - 10, 0, button2_width, button_height)
+        
+        # Create rectangles
         rect1 = bg.pygame.Rect(rect1_place)
         rect2 = bg.pygame.Rect(rect2_place)
-        self.buttons.append(rect1)
-        self.buttons.append(rect2)
-        self.buttons_text.append(text1)
-        self.buttons_text.append(text2)
+        
+        # Store buttons and text
+        self.buttons = [rect1, rect2]
+        self.buttons_text = [text1, text2]
 
     def step(self):
         if self.algorithm.running:
