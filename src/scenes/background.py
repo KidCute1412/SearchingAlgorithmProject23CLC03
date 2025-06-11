@@ -84,9 +84,9 @@ class background:
 
         # draw map
         self.render_map(screen)
-        
+        self.render_algorithm(screen) 
         # BUTTONS
         for button in self.buttons:
             #button: but.Button
             button.draw(screen)
-        self.render_algorithm(screen)     
+            

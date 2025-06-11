@@ -65,6 +65,7 @@ class DropDownMenu:
         self.options = [Button(text, (position[0], position[1] + (i + 1)* size[1]), size)
                          for i, text in enumerate(options_text)]
         self.is_open = False
+        self.prev_name_main_button = None
 
     def toggle(self):
         self.is_open = not self.is_open    
@@ -90,19 +91,27 @@ class DropDownMenu:
         return_value = None
         for event in events:
             if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
-            # click outside the down menu to close it
+                # click outside the down menu to close it
                 if not self.main_button.rect.collidepoint(event.pos) and \
                 all(not opt.rect.collidepoint(event.pos) for opt in self.options):
                     self.is_open = False
         self.main_button.handle_event(events)
         if self.is_open:
             self.change_main_text("Select Algorithm")
-        for option in self.options:
-            option.handle_event(events)
-            if option.is_called:
-                self.change_main_text(option.text)
-                self.is_open = False
-                break
+            for option in self.options:
+                option.handle_event(events)
+                if option.is_called:
+                    self.change_main_text(option.text)
+                    self.prev_name_main_button = option.text
+                    self.is_open = False
+                    for opt in self.options:
+                        opt: Button
+                        opt.hovered = False
+                    break
+        else:
+            if self.prev_name_main_button:
+                self.change_main_text(self.prev_name_main_button)        
+        
                 
 
         
