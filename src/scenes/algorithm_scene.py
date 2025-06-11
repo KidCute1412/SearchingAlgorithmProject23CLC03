@@ -3,7 +3,7 @@ import utils.global_settings as glb
 import utils.load_resources as load_res
 import algorithms.Algorithms as algos
 import algorithms.DFS as DFS
-import algorithms.UCS as USC
+import utils.button as but
 
 
 
@@ -15,18 +15,28 @@ class algorithm_scene(bg.background):
         super().__init__()
         self.set_background_color(glb.WHITE)
         self.draw_buttons()
+        self.add_function_to_button()
         self.background_image = None
 
         # for rendering the map
-        self.cell_size = 50
-        self.colors = {}
-        self.base_x = 0
-        self.base_y = 0
-        self.map_data = load_res.get_map(glb.selected_map)
-        self.draw_map()
+        self.cell_size = glb.CELL_SIZE
+        #self.map_data = copy.deepcopy(load_res.get_map(glb.selected_map))  # Copy the map data to avoid modifying the original
+        glb.CURRENT_MAP = glb.reset_map_data()
+        self.map_data = glb.CURRENT_MAP
+        self.colors = {
+            '1': glb.PATH_COLOR,  # Path
+            '0': glb.WALL_COLOR,  # Wall
+            'S': glb.START_COLOR,    # Start
+            'E': glb.END_COLOR,  # End
+         }   
+        self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
+        self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
         self.algorithm : algos.searching_algorithms = None
         self.set_algorithm()
+        self.algorithm = None
+        self.previous_mouse_pos = None
     
+    # UNCOMMENT THIS IF YOU WANT TO USE OTHER ALGORITHMS
     def set_algorithm(self):
         if glb.selected_algorithm == 'DFS':
             self.algorithm = DFS.DFS()
@@ -45,24 +55,13 @@ class algorithm_scene(bg.background):
         # elif glb.selected_algorithm == 'IDA*':
         #     self.algorithm = algos.IDAStar_algorithm(self.map_data)  
 
-    def draw_map(self):
-        if not self.map_data:
-            print("Map data in empty !")
-            return
-        self.cell_size = 50
-        self.colors = {
-            '1': (255, 255, 255),  # Path
-            '0': (100, 255, 255),  # Wall
-            'S': (0, 255, 100),    # Start
-            'E': (255, 0, 100),  # End
-         }   
-        self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
-        self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size) // 2
+
+        
         
     def render_map(self, screen):
         for y, row in enumerate(self.map_data):
             for x, cell in enumerate(row):
-                color = self.colors.get(cell, (0, 0, 0))
+                color = self.colors.get(cell, glb.BLACK)
                 rect = bg.pygame.Rect(
                     self.base_x + x * self.cell_size,
                     self.base_y + y * self.cell_size,
@@ -72,46 +71,163 @@ class algorithm_scene(bg.background):
                 # Draw the cell
                 bg.pygame.draw.rect(screen, color, rect)
                 # Draw the border
-                bg.pygame.draw.rect(screen, (0, 0, 0), rect, 1)
+                bg.pygame.draw.rect(screen, glb.BLACK, rect, 1)
 
     def draw_buttons(self):
-        rect1_place = (glb.DEFAULT_SIZE[0] // 2 - 100, 0, 200, 50)
-        text1 = "Start DFS"
-        rect2_place = (glb.DEFAULT_SIZE[0] - 200, 0, 200, 50)
-        text2 = "Exit Game"
-        rect1 = bg.pygame.Rect(rect1_place)
-        rect2 = bg.pygame.Rect(rect2_place)
-        self.buttons.append(rect1)
-        self.buttons.append(rect2)
-        self.buttons_text.append(text1)
-        self.buttons_text.append(text2)
+    
+        button1 = but.Button("Start Algorithm", (glb.DEFAULT_SIZE[0] // 2 - 100, 0), (200, 50))
+        button2 = but.Button("Exit", (glb.DEFAULT_SIZE[0] - 200, 0), (200, 50))
+        button3 = but.Button("Randomize Map", (glb.DEFAULT_SIZE[0] // 2 + 200, 100), (250, 50))
+        
+        menu = but.DropDownMenu("Select Algorithm", glb.ALGORITHMS, (100, 100), (300, 50))
+        self.buttons.append(button1)
+        self.buttons.append(button2)
+        self.buttons.append(button3)
+        self.buttons.append(menu)
+    def start_algorithm(self):
+        if self.algorithm is None:
+            print("No algorithm selected.")
+            return
+        self.algorithm.start()
+        print(f"Starting {glb.selected_algorithm} algorithm.")
+    def add_function_to_button(self):
+        self.buttons[0].call_back = lambda: self.start_algorithm()
+        self.buttons[1].call_back = lambda: glb.return_scene('welcome_scene')
+        self.buttons[2].call_back = lambda: glb.randomize_map_data()
+        self.buttons[3].add_function_to_button(0, lambda: glb.choose_algorithm('DFS'))
+        self.buttons[3].add_function_to_button(1, lambda: glb.choose_algorithm('BFS'))
+        self.buttons[3].add_function_to_button(2, lambda: glb.choose_algorithm('A*'))
+        self.buttons[3].add_function_to_button(3, lambda: glb.choose_algorithm('Beam Search'))
+        self.buttons[3].add_function_to_button(4, lambda: glb.choose_algorithm('IDDFS'))
+        self.buttons[3].add_function_to_button(5, lambda: glb.choose_algorithm('UCS'))
+        self.buttons[3].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
+        self.buttons[3].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
+
 
     def step(self):
+        if self.algorithm is None:
+            return
         if self.algorithm.running:
             self.algorithm.step()
+    def select_in_menu(self):
+        for algorithm_button in self.buttons[3].options:
+            if algorithm_button.is_called:
+                print ("It is here")
+                self.set_algorithm()
+                algorithm_button.is_called = False
+                break
+          
+    def update(self, events):
+        next_scene = super().update(events)
+        
+        self.buttons: list[but.Button] = self.buttons
+        if self.buttons[2].is_called: # reset the map (randomize)
 
-    def click_buttons(self, events):
-        for event in events: 
-            if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = event.pos
-                for button in self.buttons:
-                    if button.collidepoint(mouse_pos):
-                        if button is self.buttons[0]:
-                            print('Start algorithm')
-                            self.algorithm.start()
-                        if button is self.buttons[1]:
-                            return 'select_algorithm_scene'
-        return 'algorithm_scene'        
+            self.map_data = glb.CURRENT_MAP
+            self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
+            self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
+            self.previous_mouse_pos = None
+            if self.algorithm:
+                self.algorithm.update_map()
+        self.select_in_menu()
+           
+        # CUSTOM BLOCK
+        for event in events:
+            if event.type == bg.pygame.MOUSEMOTION and event.buttons[0]:
+                self.custom_block(event.pos)  
+        
+        if next_scene:
+            return next_scene          
+        return 'algorithm_scene'
     
+    
+    def custom_block(self, mouse_pos):
+        if self.previous_mouse_pos is None:
+            self.previous_mouse_pos = mouse_pos
+
+
+        # Draw the custom block wall
+        if not (self.base_x <= mouse_pos[0] < self.base_x +  len(self.map_data[0]) * self.cell_size and
+                self.base_y <= mouse_pos[1] < self.base_y + len(self.map_data) * self.cell_size):
+            return
+        prev_x = (self.previous_mouse_pos[0] - self.base_x) // self.cell_size
+        prev_y = (self.previous_mouse_pos[1] - self.base_y) // self.cell_size
+        x = (mouse_pos[0] - self.base_x) // self.cell_size
+        y = (mouse_pos[1] - self.base_y) // self.cell_size
+        if (prev_x, prev_y) == (x, y):
+            return
+        self.previous_mouse_pos = mouse_pos
+        if 0 <= x < len(self.map_data[0]) and 0 <= y < len(self.map_data):
+            if self.map_data[y][x] == '1':
+                self.map_data[y][x] = '0' 
+            elif self.map_data[y][x] == '0':
+                self.map_data[y][x] = '1'
+            
+
+           
+        
+        
     def render_algorithm(self, screen):
+        if self.algorithm is None:
+            return
         for state in self.algorithm.visited_nodes:
-            bg.pygame.draw.rect(screen, (255, 100, 100), (self.base_x + state[1] * self.cell_size,
+            if state == self.algorithm.start_node or state == self.algorithm.end_node:
+                continue
+            # Draw the visited state
+            bg.pygame.draw.rect(screen, glb.VISITED_COLOR, (self.base_x + state[1] * self.cell_size,
                                                      self.base_y + state[0] * self.cell_size,
                                                      self.cell_size, self.cell_size))
+            # Draw the border around the visited state
+            bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,
+                                                     self.base_y + state[0] * self.cell_size,
+                                                     self.cell_size, self.cell_size), 1)
             
         if self.algorithm.path:
             for state in self.algorithm.path:
-                bg.pygame.draw.rect(screen, (100, 255, 100), (self.base_x + state[1] * self.cell_size,
+                if state == self.algorithm.start_node or state == self.algorithm.end_node:
+                    continue
+                # Draw the found path state    
+                bg.pygame.draw.rect(screen, glb.FOUND_COLOR, (self.base_x + state[1] * self.cell_size,
+                                                             self.base_y + state[0] * self.cell_size,
+                                                             self.cell_size, self.cell_size))
+                # Draw the border around the found path state
+                bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,    
                                                          self.base_y + state[0] * self.cell_size,
-                                                         self.cell_size, self.cell_size))
-                    
+                                                         self.cell_size, self.cell_size), 1)
+               
+                
+            
+            # DRAW THE PATH
+            for state_index in range(len(self.algorithm.path) - 1):
+                
+                bg.pygame.draw.line(screen, glb.LINE_COLOR,
+                                     (self.base_x + self.algorithm.path[state_index][1] * self.cell_size + self.cell_size // 2,
+                                      self.base_y + self.algorithm.path[state_index][0] * self.cell_size + self.cell_size // 2),
+                                     (self.base_x + self.algorithm.path[state_index + 1][1] * self.cell_size + self.cell_size // 2,
+                                      self.base_y + self.algorithm.path[state_index + 1][0] * self.cell_size + self.cell_size // 2), 3)   
+                
+
+    # def click_buttons(self, events):
+    #     for event in events: 
+    #         if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
+    #             mouse_pos = event.pos
+    #             for button in self.buttons:
+    #                 if button.collidepoint(mouse_pos):
+    #                     if button is self.buttons[0]:
+    #                         print('Start algorithm')
+    #                         self.algorithm.start()
+    #                     if button is self.buttons[1]:
+    #                         return 'select_algorithm_scene'
+    #                     if button is self.buttons[2]:
+    #                         print('Randomize map')
+    #                         glb.CURRENT_MAP = glb.randomize_map_data()
+    #                         self.map_data = glb.CURRENT_MAP
+    #                         self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
+    #                         self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
+    #                         self.previous_mouse_pos = None
+    #                         if self.algorithm:
+    #                             self.algorithm.update_map()
+    #         if event.type == bg.pygame.MOUSEMOTION and event.buttons[0]:
+                
+    #             self.custom_block(event.pos)            
+    #     return 'algorithm_scene'        

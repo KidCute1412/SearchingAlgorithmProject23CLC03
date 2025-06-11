@@ -3,8 +3,6 @@ import utils.global_settings as glb
 import utils.load_resources as load_res
 import scenes.background as bg
 import scenes.welcome_scene as welcome
-import scenes.select_map_scene as select_map_scene
-import scenes.select_algorithm_scene as select_algorithm_scene
 import scenes.algorithm_scene as algorithm_scene
 
 
@@ -35,25 +33,14 @@ class Game:
         if next_scene == 'welcome_scene':
             bg.current_scene = 'welcome_scene'
             self.current_scene = welcome.welcome_scene()
-        if next_scene == 'select_map_scene':
-            bg.current_scene = 'select_map_scene'
-            self.current_scene = select_map_scene.select_map_scene()
-        if next_scene == 'select_algorithm_scene':
-            bg.current_scene = 'select_algorithm_scene'
-            self.current_scene = select_algorithm_scene.select_algorithm_scene()
         if next_scene == 'algorithm_scene':
             bg.current_scene = 'algorithm_scene'
             self.current_scene = algorithm_scene.algorithm_scene()   
-        # if next_scene == 'DFS_algorithm':
-        #     bg.current_scene = 'DFS_algorithm'   
-        #     self.current_scene = DFS.DFS_algorithm("Picture/Map.txt") 
         if next_scene == 'exit':
             bg.pygame.quit()
     
     def update(self, events):
-        self.current_scene.step()
-        self.current_scene.update()
-        next_scene = self.current_scene.click_buttons(events)
+        next_scene = self.current_scene.update(events)
         self.control_scene(next_scene)
     
     
