@@ -28,12 +28,14 @@ class USC(algos.searching_algorithms):
 
         bg.pygame.time.delay(100)  
         self.visited_nodes.add(current_node.state)
+        self.visited_count += 1
         self.current_node = current_node  
 
         # reached goal
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
+            self.stop_timer()
             self.reconstruct_path(current_node)
             return
 
