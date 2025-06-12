@@ -28,7 +28,7 @@ class USC(algos.searching_algorithms):
         if current_node.state in self.visited_nodes:
             return
 
-        bg.pygame.time.delay(10)  
+        bg.pygame.time.delay(50)  
         self.visited_nodes.add(current_node.state)
         self.current_node = current_node  
 

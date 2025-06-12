@@ -11,7 +11,6 @@ import scenes.algorithm_scene as algorithm_scene
 
 
 
-
 class Game:
     def __init__(self):
         
