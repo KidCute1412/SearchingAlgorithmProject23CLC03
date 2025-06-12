@@ -11,15 +11,17 @@ class USC(algos.searching_algorithms):
 
     def start(self):
         super().start()
+        self.pq = []
+        self.current_cost = {}
         start_state = self.maze.initial_state()
-        start_node = node.Node(state = start_state, path_cost = 0)
+        start_node = node.Node(state = start_state, path_cost = 0, heuristic = 0)
         heapq.heappush(self.pq, (start_node.path_cost, start_node))
         self.current_cost[start_state] = 0
 
     def step(self):
         if not self.running or not self.pq:
             return
-
+        
         _, current_node = heapq.heappop(self.pq) #take out the node with smallest cost
 
         # avoid repetition
@@ -48,7 +50,8 @@ class USC(algos.searching_algorithms):
                     parent = current_node,
                     action = action,
                     path_cost = new_cost,
-                    depth = current_node.depth + 1
+                    depth=current_node.depth + 1,
+                    heuristic=0
                 )
                 heapq.heappush(self.pq, (new_cost, neighbor_node))
        
