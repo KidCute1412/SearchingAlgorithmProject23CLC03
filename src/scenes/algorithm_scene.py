@@ -3,6 +3,7 @@ import utils.global_settings as glb
 import utils.load_resources as load_res
 import algorithms.Algorithms as algos
 import algorithms.DFS as DFS
+import algorithms.UCS as UCS
 import utils.button as but
 
 
@@ -49,7 +50,7 @@ class algorithm_scene(bg.background):
         # elif glb.selected_algorithm == 'IDDFS':
         #     self.algorithm = algos.IDDFS_algorithm(self.map_data)
         elif glb.selected_algorithm == 'UCS':
-            self.algorithm = USC.USC()
+            self.algorithm = UCS.USC()
         # elif glb.selected_algorithm == 'Bi-Directional Search':
         #     self.algorithm = algos.BiDirectionalSearch_algorithm(self.map_data)
         # elif glb.selected_algorithm == 'IDA*':
