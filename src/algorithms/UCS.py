@@ -3,7 +3,7 @@ import algorithms.Maze as maze
 import algorithms.Algorithms as algos
 import scenes.background as bg
 import heapq
-class USC(algos.searching_algorithms):
+class UCS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
         self.pq = []
@@ -28,7 +28,7 @@ class USC(algos.searching_algorithms):
         if current_node.state in self.visited_nodes:
             return
 
-        bg.pygame.time.delay(50)  
+        bg.pygame.time.delay(10)  
         self.visited_nodes.add(current_node.state)
         self.current_node = current_node  
 

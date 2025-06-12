@@ -20,7 +20,7 @@ class DFS(algos.searching_algorithms):
         current_node = self.stack.pop()
         if current_node.state in self.visited_nodes:
             return
-        bg.pygame.time.delay(10)  # Add a delay to visualize the DFS process
+        bg.pygame.time.delay(50)  # Add a delay to visualize the DFS process
         self.visited_nodes.add(current_node.state)
 
         # found goal
