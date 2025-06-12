@@ -18,7 +18,7 @@ class IDDFS(algos.searching_algorithms):
         self.visited_nodes = set()
 
     def step(self):
-        #avoid infinite loop when there's no goals/paths, 800 cuz there are maximally 800 nodes 
+        # avoid infinite loop when there's no goal/path, 800 cuz there are maximally 800 nodes 
         if self.depth_limit > 800: 
             self.running = False
             print("No solution found.")
@@ -40,6 +40,7 @@ class IDDFS(algos.searching_algorithms):
         bg.pygame.time.delay(1)
         self.visited_nodes.add(current_node.state)
 
+        # goal is found
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
