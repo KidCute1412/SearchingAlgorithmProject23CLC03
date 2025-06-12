@@ -8,7 +8,6 @@ class IDDFS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
         self.depth_limit = 0  # current depth limit
-
     def start(self):
         super().start()
         self.depth_limit = 0  # start from level 0
@@ -19,12 +18,18 @@ class IDDFS(algos.searching_algorithms):
         self.visited_nodes = set()
 
     def step(self):
+        #avoid infinite loop when there's no goals/paths, 800 cuz there are maximally 800 nodes 
+        if self.depth_limit > 800: 
+            self.running = False
+            print("No solution found.")
+            return
+
         if not self.stack and self.running and not self.found_path:
             # deepen and repeat dfs
             self.depth_limit += 1
             self.reset_iteration()
             return
-
+        
         if not self.stack or not self.running:
             return
 
@@ -32,7 +37,7 @@ class IDDFS(algos.searching_algorithms):
         if current_node.state in self.visited_nodes:
             return
 
-        bg.pygame.time.delay(100)
+        bg.pygame.time.delay(1)
         self.visited_nodes.add(current_node.state)
 
         if self.maze.is_goal_state(current_node.state):
