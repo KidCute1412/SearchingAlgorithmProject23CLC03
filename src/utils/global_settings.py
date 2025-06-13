@@ -2,6 +2,9 @@ from http.client import FOUND
 from tkinter import CURRENT
 from tracemalloc import start
 
+selected_map = None
+selected_algorithm = None       # Currently running or last-run algorithm
+pending_algorithm = None        # Selected in dropdown but not started yet
 
 DEFAULT_SIZE = (1200, 800)
 
@@ -13,29 +16,29 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 PINK = (255, 105, 180)
 
-WALL_COLOR = (100, 255, 255)  # Wall color
-START_COLOR = (0, 255, 100)  # Start point color
-END_COLOR = (255, 0, 100)  # End point color
-PATH_COLOR = (255, 255, 255)  # Path color
+WALL_COLOR = (100, 255, 255)   # Wall color
+START_COLOR = (0, 255, 100)    # Start point color
+END_COLOR = (255, 0, 100)      # End point color
+PATH_COLOR = (255, 255, 255)   # Path color
 VISITED_COLOR = (255, 100, 100)  # Visited cell color
 FOUND_COLOR = (200, 255, 150)  # Found path color
-LINE_COLOR = (0, 100, 255)  # Line color for path visualization
+LINE_COLOR = (0, 100, 255)     # Line color for path visualization
+
+# Selection State
 
 
-selected_map = None
-selected_algorithm = None
-# DFS, BFS, A*, Beam Search, IDDFS, UCS, Bi-Directional Search, IDA*
+# Supported Algorithms
 ALGORITHMS = ["DFS", "BFS", "A*", "Beam Search", "IDDFS", "UCS", "Bi-Directional Search", "IDA*"]
-# MAP SETTINGS
+
+# Map Settings
 MAP_ROWS = 20
 MAP_COLS = 40
 CELL_SIZE = 30
 CURRENT_MAP = None
 
-
 def reset_map_data():
     """Reset the map data to a default state."""
-    map_data =  [['1' for _ in range(MAP_COLS)] for _ in range(MAP_ROWS)]
+    map_data = [['1' for _ in range(MAP_COLS)] for _ in range(MAP_ROWS)]
     map_data[0][0] = 'S'  # Set the start point
     map_data[-1][-1] = 'E'  # Set the end point
     return map_data
@@ -60,7 +63,6 @@ def randomize_map_data():
     global CURRENT_MAP
     CURRENT_MAP = map_data
 
-
 def is_valid_color(color):
     """Check if the provided color is a valid RGB tuple."""
     return isinstance(color, tuple) and len(color) == 3 and all(0 <= c <= 255 for c in color)
@@ -69,14 +71,14 @@ def lighten_color(color, factor=0.2):
     """Lighten a color by a given factor."""
     return tuple(min(int(c + c * factor), 255) for c in color)
 
-def return_scene( scene_name):
+def return_scene(scene_name):
     return scene_name
 
 def choose_algorithm(algorithm_name):
-    global selected_algorithm
+    """Store algorithm selection without activating it yet."""
+    global pending_algorithm
     if algorithm_name in ALGORITHMS:
-        selected_algorithm = algorithm_name
-        print(f"Selected algorithm: {selected_algorithm}")
+        pending_algorithm = algorithm_name
+        print(f"Pending algorithm set to: {pending_algorithm}")
     else:
         print(f"Algorithm '{algorithm_name}' is not available. Please choose from {ALGORITHMS}.")
-    return None    
