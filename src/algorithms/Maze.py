@@ -17,6 +17,9 @@ class Maze():
     def initial_state(self):
         return self.start
     
+    def goal_state(self):
+        return self.end
+    
     def is_goal_state(self, state):
         return self.end == state
 
@@ -46,7 +49,7 @@ class Maze():
         
         return neighbors
     
-    def heristic(self, state):
+    def heuristic(self, state):
         if not self.end:
             return 0
         row, col = state

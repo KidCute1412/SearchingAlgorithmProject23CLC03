@@ -7,6 +7,7 @@ import scenes.background as bg
 class IDDFS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
+        self.delay_time = 1
         self.depth_limit = 0  # current depth limit
     def start(self):
         super().start()
@@ -37,12 +38,14 @@ class IDDFS(algos.searching_algorithms):
         if current_node.state in self.visited_nodes:
             return
 
-        bg.pygame.time.delay(1)
+        bg.pygame.time.delay(self.delay_time)
         self.visited_nodes.add(current_node.state)
+        self.visited_count += 1
 
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
+            self.stop_timer()
             self.reconstruct_path(current_node)
             return
 

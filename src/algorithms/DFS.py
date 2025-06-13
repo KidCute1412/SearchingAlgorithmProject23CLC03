@@ -3,12 +3,10 @@ import algorithms.Algorithms as algos
 import scenes.background as bg
 
 
-
-
-
 class DFS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
+        self.delay_time = 50  # delay time in milliseconds for visualization
     def start(self):
         super().start()
         self.stack = [node.Node(self.maze.initial_state())]
@@ -20,13 +18,14 @@ class DFS(algos.searching_algorithms):
         current_node = self.stack.pop()
         if current_node.state in self.visited_nodes:
             return
-        bg.pygame.time.delay(50)  # Add a delay to visualize the DFS process
+        bg.pygame.time.delay(self.delay_time)  # Add a delay to visualize the DFS process
         self.visited_nodes.add(current_node.state)
-
+        self.visited_count += 1
         # found goal
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
+            self.stop_timer()
             self.reconstruct_path(current_node)
             
         
