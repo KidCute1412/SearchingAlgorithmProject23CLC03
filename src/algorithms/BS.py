@@ -6,6 +6,7 @@ class BS(algos.searching_algorithms):
     def __init__(self, beam_width=10):
         super().__init__()
         self.beam_width = beam_width
+        self.delay_time = 50  # delay time in milliseconds for visualization
 
     def start(self):
         super().start()
@@ -21,13 +22,14 @@ class BS(algos.searching_algorithms):
             if current_node.state in self.visited_nodes:
                 continue
 
-            bg.pygame.time.delay(50)
+            bg.pygame.time.delay(self.delay_time)
             self.visited_nodes.add(current_node.state)
-
+            self.visited_count += 1
             if self.maze.is_goal_state(current_node.state):
                 self.found_path = True
                 self.running = False
                 self.reconstruct_path(current_node)
+                self.stop_timer()
                 return
 
             for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):
@@ -36,5 +38,5 @@ class BS(algos.searching_algorithms):
                     next_level.append(child_node)
 
         # Sắp xếp theo heuristic và giữ lại beam_width node tốt nhất
-        next_level.sort(key=lambda n: self.maze.heristic(n.state))
+        next_level.sort(key=lambda n: self.maze.heuristic(n.state))
         self.queue = next_level[:self.beam_width]

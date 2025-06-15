@@ -33,6 +33,8 @@ class Button:
         bg.pygame.draw.rect(screen, self.color, self.rect)
         bg.pygame.draw.rect(screen, self.color_border, self.rect, 2)
         # Draw the text on the button
+        self.text_surface = self.font.render(self.text, True, glb.WHITE)
+        self.text_rect = self.text_surface.get_rect(center=self.rect.center)
         screen.blit(self.text_surface, self.text_rect) 
         if self.hovered:
             # Draw the hovered state

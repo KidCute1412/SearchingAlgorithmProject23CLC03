@@ -50,7 +50,7 @@ class searching_algorithms:
     def total_time(self):
         if self.start_time is not None and self.end_time is not None:
             return self.end_time - self.start_time - self.delay_time * self.visited_count / 1000
-        return None
+        
     def step(self):
         pass
     def reconstruct_path(self, current = None):

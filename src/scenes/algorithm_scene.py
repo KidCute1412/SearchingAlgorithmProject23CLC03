@@ -40,22 +40,23 @@ class algorithm_scene(bg.background):
         self.algorithm : algos.searching_algorithms = None
         self.set_algorithm()
         self.algorithm = None
+        self.stop_algorithm = False
         self.previous_mouse_pos = None
-        self.font = bg.pygame.font.SysFont("Arial", 24)
+       
+        self.elapsed = 0.0
         self.prev_algorithm_name = None
         self.prev_visited_count = None
         self.prev_elapsed_time = None
+        self.prev_algo_done = False
+        #PAUSE TIME
+        self.paused_total_time = 0
+        self.pause_time = None
+        self.is_paused = False
+        self.font = None  # Font for rendering metrics
     
     # UNCOMMENT THIS IF YOU WANT TO USE OTHER ALGORITHMS
     def set_algorithm(self):
-        if hasattr(self, 'algorithm') and self.algorithm:
-            self.prev_name = glb.selected_algorithm  # Save BEFORE it changes
-            self.prev_time = self.algorithm.total_time()
-            self.prev_visited = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
-        else:
-            self.prev_name = None
-            self.prev_time = None
-            self.prev_visited = None
+        
         if glb.selected_algorithm == 'DFS':
             self.algorithm = DFS.DFS()
         elif glb.selected_algorithm == 'BFS':
@@ -73,45 +74,7 @@ class algorithm_scene(bg.background):
         elif glb.selected_algorithm == 'IDA*':
             self.algorithm = IDA.IDAStar()  
 
-    def render_metrics(self, screen):
-        if self.font is None:
-            self.font = bg.pygame.font.SysFont(None, 32)
 
-        screen_width = glb.DEFAULT_SIZE[0]
-        screen_height = glb.DEFAULT_SIZE[1]
-        
-        y_offset = screen_height // 6
-
-        # Current algorithm stats
-        if self.algorithm and self.algorithm.start_time is not None:
-            
-            if self.algorithm.end_time is not None:
-                elapsed = self.algorithm.total_time()
-            else:
-                elapsed = time.time() - self.algorithm.start_time -self.algorithm.delay_time * self.algorithm.visited_count / 1000
-
-            text_visited = self.font.render(f"Visited Nodes: {self.algorithm.visited_count}", True, glb.BLACK)
-            text_time = self.font.render(f"Elapsed Time: {elapsed:.2f} s", True, glb.BLACK)
-
-            screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset + 25)))
-            screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 55)))
-
-        # Previous algorithm stats
-        if self.prev_algorithm_name and self.prev_visited_count is not 0:
-            prev_y_offset = y_offset - 90
-            text_prev_name = self.font.render(f"Previous: {self.prev_algorithm_name}", True, (120, 120, 120))
-            text_prev_visited = self.font.render(f"Visited Nodes: {self.prev_visited_count}", True, (120, 120, 120))
-            text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
-
-            screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2, prev_y_offset + 25)))
-            screen.blit(text_prev_visited, text_prev_visited.get_rect(center=(screen_width // 2, prev_y_offset + 55)))
-            screen.blit(text_prev_time, text_prev_time.get_rect(center=(screen_width // 2, prev_y_offset + 85)))
-
-
-
-
-        
-        
     def render_map(self, screen):
         for y, row in enumerate(self.map_data):
             for x, cell in enumerate(row):
@@ -131,29 +94,65 @@ class algorithm_scene(bg.background):
     
         button1 = but.Button("Start Algorithm", (glb.DEFAULT_SIZE[0] // 2 - 100, 0), (200, 50))
         button2 = but.Button("Exit", (glb.DEFAULT_SIZE[0] - 200, 0), (200, 50))
-        button3 = but.Button("Randomize Map", (glb.DEFAULT_SIZE[0] // 2 + 200, 100), (250, 50))
+        button3 = but.Button("Randomize Map", (0, 0), (250, 50))
         
         menu = but.DropDownMenu("Select Algorithm", glb.ALGORITHMS, (100, 100), (300, 50))
         self.buttons.append(button1)
         self.buttons.append(button2)
         self.buttons.append(button3)
         self.buttons.append(menu)
-    def start_algorithm(self):
-        if self.algorithm is not None:
-            self.prev_algorithm_name = glb.selected_algorithm
 
-            if self.algorithm.start_time is not None:
-                self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
-                self.prev_elapsed_time = (
-                    self.algorithm.total_time()
-                    if self.algorithm.end_time is not None
-                    else time.time() - self.algorithm.start_time
-                )
+
+
+    def render_metrics(self, screen):
+     
+        if self.font is None:
+            self.font = bg.pygame.font.SysFont(None, 32)
+
+        screen_width = glb.DEFAULT_SIZE[0]
+        screen_height = glb.DEFAULT_SIZE[1]
+        
+        y_offset = screen_height // 7
+
+        # Current algorithm stats
+        if self.algorithm and self.algorithm.start_time is not None:
+            
+            if self.algorithm.end_time is not None:
+                self.elapsed = self.algorithm.total_time() - self.paused_total_time
+            elif self.is_paused:
+                pass
             else:
-                # Prevent crash if algorithm was not started
-                self.prev_visited_count = 0
-                self.prev_elapsed_time = 0.0
+                self.elapsed = time.time() - self.algorithm.start_time\
+                - self.algorithm.delay_time * self.algorithm.visited_count / 1000\
+                - self.paused_total_time
 
+
+            text_visited = self.font.render(f"Visited Nodes: {self.algorithm.visited_count}", True, glb.BLACK)
+            text_time = self.font.render(f"Elapsed Time: {self.elapsed:.2f} s", True, glb.BLACK)
+
+            screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset)))
+            screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 30)))
+
+        # Previous algorithm stats
+        if self.prev_algorithm_name and self.prev_visited_count is not 0:
+            prev_y_offset = y_offset
+            text_prev_name = self.font.render(f"Previous: {self.prev_algorithm_name}", True, (120, 120, 120))
+            text_prev_visited = self.font.render(f"Visited Nodes: {self.prev_visited_count}", True, (120, 120, 120))
+            text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
+
+            screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2 + 300, prev_y_offset)))
+            screen.blit(text_prev_visited, text_prev_visited.get_rect(center=(screen_width // 2 + 300, prev_y_offset + 30)))
+            screen.blit(text_prev_time, text_prev_time.get_rect(center=(screen_width // 2 + 300, prev_y_offset + 60)))
+
+    def start_algorithm(self):
+        
+        # Reset time states
+        self.paused_total_time = 0
+        self.is_paused = False
+        self.pause_time = None
+        self.stop_algorithm = False
+        # Reset the algorithm 
+        self.algorithm = None
         # Apply the pending selection now
         if glb.pending_algorithm:
             glb.selected_algorithm = glb.pending_algorithm
@@ -165,6 +164,9 @@ class algorithm_scene(bg.background):
 
         print(f"Starting {glb.selected_algorithm} algorithm.")
         self.algorithm.start()
+
+
+
     def add_function_to_button(self):
         self.buttons[0].call_back = lambda: self.start_algorithm()
         self.buttons[1].call_back = lambda: glb.return_scene('welcome_scene')
@@ -178,8 +180,13 @@ class algorithm_scene(bg.background):
         self.buttons[3].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
         self.buttons[3].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
 
+    def stop_algorithm_function(self):
+        self.stop_algorithm = not self.stop_algorithm
+
 
     def step(self):
+        if self.stop_algorithm:
+            return
         if self.algorithm is None:
             return
         if self.algorithm.running:
@@ -187,6 +194,22 @@ class algorithm_scene(bg.background):
     def select_in_menu(self):
         for algorithm_button in self.buttons[3].options:
             if algorithm_button.is_called:
+                # CHANGE BUTTON TEXT AND FUNCTION
+                self.buttons[0].text = "Start Algorithm"
+                self.buttons[0].call_back = lambda: self.start_algorithm()
+
+                if self.prev_algo_done:
+                    self.prev_algorithm_name = glb.selected_algorithm  # Save BEFORE it changes
+                    self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
+                    self.prev_elapsed_time = self.algorithm.total_time() - self.paused_total_time
+                else:
+                    # Prevent crash if algorithm was not started
+                    self.prev_algorithm_name = None
+                    self.prev_visited_count = 0
+                    self.prev_elapsed_time = 0.0
+                self.algorithm = None    
+                self.prev_algo_done = False
+                # Set the new algorithm
                 glb.pending_algorithm = algorithm_button.text
                 algorithm_button.is_called = False
                 print(f"Pending algorithm selected: {glb.pending_algorithm}")
@@ -205,6 +228,14 @@ class algorithm_scene(bg.background):
             self.prev_algorithm_name = None
             self.prev_visited_count = None
             self.prev_elapsed_time = None
+            # CHANGE BUTTON TEXT AND FUNCTION
+            self.buttons[0].text = "Start Algorithm"
+            self.buttons[0].call_back = lambda: self.start_algorithm()
+            # Reset time states
+            self.paused_total_time = 0
+            self.is_paused = False
+            self.pause_time = None
+            self.stop_algorithm = False
             if self.algorithm:
                 self.algorithm.update_map()
         self.select_in_menu()
@@ -217,11 +248,40 @@ class algorithm_scene(bg.background):
             if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.custom_block(event.pos, force_draw=True) 
         
+
+        # CHANGE FUNCTIONS OF BUTTONS
+        self.multi_button_function()
+        
+
+
         if next_scene:
             return next_scene          
         return 'algorithm_scene'
     
-    
+    def multi_button_function(self):
+        # Stop the algorithm if it is running
+        if self.algorithm and self.algorithm.running:
+            self.buttons[0].call_back = lambda: self.stop_algorithm_function()
+            if self.stop_algorithm:
+                if not self.is_paused:
+                    self.buttons[0].text = "Continue"
+                    self.pause_time = time.time()
+                    self.is_paused = True
+                
+            else:    
+                self.buttons[0].text = "Stop"
+                if self.is_paused and self.pause_time is not None:
+                    self.paused_total_time += time.time() - self.pause_time
+                    print(f"Paused for {time.time() - self.pause_time:.2f} seconds.")
+                    print(f"Total paused time: {self.paused_total_time:.2f} seconds.")
+                    self.is_paused = False
+                    self.pause_time = None 
+                
+        if self.algorithm and self.algorithm.path:
+                self.buttons[0].text = "Restart Algorithm"
+                self.buttons[0].call_back = lambda: self.start_algorithm()     
+                 
+
     def custom_block(self, mouse_pos, force_draw=False):
         if self.previous_mouse_pos is None:
             self.previous_mouse_pos = mouse_pos
@@ -267,6 +327,7 @@ class algorithm_scene(bg.background):
                                                      self.cell_size, self.cell_size), 1)
             
         if self.algorithm.path:
+            self.prev_algo_done = True
             for state in self.algorithm.path:
                 if state == self.algorithm.start_node or state == self.algorithm.end_node:
                     continue
@@ -292,27 +353,4 @@ class algorithm_scene(bg.background):
         self.render_metrics(screen)   
                 
 
-    # def click_buttons(self, events):
-    #     for event in events: 
-    #         if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
-    #             mouse_pos = event.pos
-    #             for button in self.buttons:
-    #                 if button.collidepoint(mouse_pos):
-    #                     if button is self.buttons[0]:
-    #                         print('Start algorithm')
-    #                         self.algorithm.start()
-    #                     if button is self.buttons[1]:
-    #                         return 'select_algorithm_scene'
-    #                     if button is self.buttons[2]:
-    #                         print('Randomize map')
-    #                         glb.CURRENT_MAP = glb.randomize_map_data()
-    #                         self.map_data = glb.CURRENT_MAP
-    #                         self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
-    #                         self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
-    #                         self.previous_mouse_pos = None
-    #                         if self.algorithm:
-    #                             self.algorithm.update_map()
-    #         if event.type == bg.pygame.MOUSEMOTION and event.buttons[0]:
-                
-    #             self.custom_block(event.pos)            
-    #     return 'algorithm_scene'        
+      
