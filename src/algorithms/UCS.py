@@ -8,6 +8,7 @@ class UCS(algos.searching_algorithms):
         super().__init__()
         self.pq = []
         self.current_cost = {}
+        self.delay_time = 10  # delay time in milliseconds for visualization
 
     def start(self):
         super().start()
@@ -28,14 +29,16 @@ class UCS(algos.searching_algorithms):
         if current_node.state in self.visited_nodes:
             return
 
-        bg.pygame.time.delay(10)  
+        bg.pygame.time.delay(self.delay_time)  
         self.visited_nodes.add(current_node.state)
+        self.visited_count += 1
         self.current_node = current_node  
 
         # reached goal
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
+            self.stop_timer()
             self.reconstruct_path(current_node)
             return
 
