@@ -4,6 +4,8 @@ import utils.load_resources as load_res
 import algorithms.Algorithms as algos
 import algorithms.DFS as DFS
 import algorithms.UCS as UCS
+import algorithms.BFS as BFS
+import algorithms.BS as BS
 import algorithms.BDS as BDS
 import algorithms.IDAstar as IDA
 import algorithms.IDDFS as IDDFS
@@ -56,12 +58,12 @@ class algorithm_scene(bg.background):
             self.prev_visited = None
         if glb.selected_algorithm == 'DFS':
             self.algorithm = DFS.DFS()
-        # elif glb.selected_algorithm == 'BFS':
-        #     self.algorithm = algos.BFS_algorithm(self.map_data)
+        elif glb.selected_algorithm == 'BFS':
+            self.algorithm = BFS.BFS()
         # elif glb.selected_algorithm == 'A*':
         #     self.algorithm = algos.AStar_algorithm(self.map_data)
-        # elif glb.selected_algorithm == 'Beam Search':
-        #     self.algorithm = algos.BeamSearch_algorithm(self.map_data)
+        elif glb.selected_algorithm == 'Beam Search':
+            self.algorithm = BS.BS()
         elif glb.selected_algorithm == 'IDDFS':
             self.algorithm = IDDFS.IDDFS()
         elif glb.selected_algorithm == 'UCS':
@@ -210,32 +212,38 @@ class algorithm_scene(bg.background):
         # CUSTOM BLOCK
         for event in events:
             if event.type == bg.pygame.MOUSEMOTION and event.buttons[0]:
-                self.custom_block(event.pos)  
+                self.custom_block(event.pos)
+
+            if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
+                self.custom_block(event.pos, force_draw=True) 
         
         if next_scene:
             return next_scene          
         return 'algorithm_scene'
     
     
-    def custom_block(self, mouse_pos):
+    def custom_block(self, mouse_pos, force_draw=False):
         if self.previous_mouse_pos is None:
             self.previous_mouse_pos = mouse_pos
 
-
-        # Draw the custom block wall
-        if not (self.base_x <= mouse_pos[0] < self.base_x +  len(self.map_data[0]) * self.cell_size and
-                self.base_y <= mouse_pos[1] < self.base_y + len(self.map_data) * self.cell_size):
+        if not (self.base_x <= mouse_pos[0] < self.base_x + len(self.map_data[0]) * self.cell_size and
+            self.base_y <= mouse_pos[1] < self.base_y + len(self.map_data) * self.cell_size):
             return
+
         prev_x = (self.previous_mouse_pos[0] - self.base_x) // self.cell_size
         prev_y = (self.previous_mouse_pos[1] - self.base_y) // self.cell_size
         x = (mouse_pos[0] - self.base_x) // self.cell_size
         y = (mouse_pos[1] - self.base_y) // self.cell_size
-        if (prev_x, prev_y) == (x, y):
+
+        # Nếu không phải force và vẫn cùng ô thì bỏ qua
+        if not force_draw and (prev_x, prev_y) == (x, y):
             return
+
         self.previous_mouse_pos = mouse_pos
+
         if 0 <= x < len(self.map_data[0]) and 0 <= y < len(self.map_data):
             if self.map_data[y][x] == '1':
-                self.map_data[y][x] = '0' 
+                self.map_data[y][x] = '0'
             elif self.map_data[y][x] == '0':
                 self.map_data[y][x] = '1'
             
