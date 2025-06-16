@@ -10,6 +10,7 @@ import algorithms.BDS as BDS
 import algorithms.IDAstar as IDA
 import algorithms.IDDFS as IDDFS
 import utils.button as but
+import utils.modal as modal
 import time
 
 
@@ -23,7 +24,7 @@ class algorithm_scene(bg.background):
         self.draw_buttons()
         self.add_function_to_button()
         self.background_image = None
-
+        self.modal = modal.Modal("No path was found!")
         # for rendering the map
         self.cell_size = glb.CELL_SIZE
         #self.map_data = copy.deepcopy(load_res.get_map(glb.selected_map))  # Copy the map data to avoid modifying the original
@@ -164,8 +165,8 @@ class algorithm_scene(bg.background):
 
         print(f"Starting {glb.selected_algorithm} algorithm.")
         self.algorithm.start()
-
-
+        # if (self.algorithm.running):
+        #     self.modal.visible = True
 
     def add_function_to_button(self):
         self.buttons[0].call_back = lambda: self.start_algorithm()
@@ -217,7 +218,7 @@ class algorithm_scene(bg.background):
           
     def update(self, events):
         next_scene = super().update(events)
-        
+        self.modal.handle_event(events)
         self.buttons: list[but.Button] = self.buttons
         if self.buttons[2].is_called: # reset the map (randomize)
 
@@ -350,6 +351,11 @@ class algorithm_scene(bg.background):
                                       self.base_y + self.algorithm.path[state_index][0] * self.cell_size + self.cell_size // 2),
                                      (self.base_x + self.algorithm.path[state_index + 1][1] * self.cell_size + self.cell_size // 2,
                                       self.base_y + self.algorithm.path[state_index + 1][0] * self.cell_size + self.cell_size // 2), 3)
+            #draw the modal
+            
+        # if (self.algorithm.running):
+        #     self.modal.draw(screen)
+
         self.render_metrics(screen)   
                 
 
