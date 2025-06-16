@@ -44,7 +44,7 @@ class IDAStar(algos.searching_algorithms):
             if self.maze.is_goal_state(current_node.state):
                 self.running = False
                 self.solution_found = True
-                self.stop_timer()
+           
                 self.reconstruct_path(current_node)
                 return
 

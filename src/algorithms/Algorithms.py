@@ -22,7 +22,8 @@ class searching_algorithms:
         self.found_path = False
         self.current_node = None
         self.start_time = None
-        self.end_time = None
+        self.delta_time = None
+        self.delay_time = None
         self.visited_count = 0
         self.font = bg.pygame.font.SysFont("Arial", 24)
     def update_map(self):
@@ -37,19 +38,20 @@ class searching_algorithms:
         self.running = False
         self.found_path = False
         self.start_time = None
-        self.end_time = None
+        self.delta_time = None
         self.delay_time = None
         self.visited_count = 0  
+   
     def start(self):
         self.running = True
         self.start_time = time.time()
         return None
-    def stop_timer(self):
-        if self.start_time is not None:
-            self.end_time = time.time()
-    def total_time(self):
-        if self.start_time is not None and self.end_time is not None:
-            return self.end_time - self.start_time - self.delay_time * self.visited_count / 1000
+    def calc_delta_time(self):
+        current_time = time.time()
+        self.delta_time = max(0.0, current_time - self.start_time - self.delay_time * 1.0 / 1000)
+        self.start_time = current_time
+        print(self.delta_time)
+   
         
     def step(self):
         pass
