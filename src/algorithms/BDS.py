@@ -51,7 +51,6 @@ class BDS(algos.searching_algorithms):
         if meet:
             self.running = False
             self.found_path = True
-            self.stop_timer()
             self.reconstruct_bidirectional_path(meet)
     
     def reconstruct_bidirectional_path(self, meet_state):

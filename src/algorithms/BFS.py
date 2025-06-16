@@ -29,7 +29,7 @@ class BFS(algos.searching_algorithms):
             self.found_path = True
             self.running = False
             self.reconstruct_path(current_node)
-            self.stop_timer()
+
             
         
         for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):

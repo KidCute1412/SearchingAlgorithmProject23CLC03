@@ -43,12 +43,13 @@ class algorithm_scene(bg.background):
         self.stop_algorithm = False
         self.previous_mouse_pos = None
        
-        self.elapsed = 0.0
+        
         self.prev_algorithm_name = None
         self.prev_visited_count = None
         self.prev_elapsed_time = None
         self.prev_algo_done = False
-        #PAUSE TIME
+        #TIME
+        self.elapsed = 0.0
         self.paused_total_time = 0
         self.pause_time = None
         self.is_paused = False
@@ -117,14 +118,9 @@ class algorithm_scene(bg.background):
         # Current algorithm stats
         if self.algorithm and self.algorithm.start_time is not None:
             
-            if self.algorithm.end_time is not None:
-                self.elapsed = self.algorithm.total_time() - self.paused_total_time
-            elif self.is_paused:
-                pass
-            else:
-                self.elapsed = time.time() - self.algorithm.start_time\
-                - self.algorithm.delay_time * self.algorithm.visited_count / 1000\
-                - self.paused_total_time
+            if not self.is_paused and not self.algorithm.found_path:
+                self.elapsed += self.algorithm.delta_time
+
 
 
             text_visited = self.font.render(f"Visited Nodes: {self.algorithm.visited_count}", True, glb.BLACK)
@@ -147,7 +143,8 @@ class algorithm_scene(bg.background):
     def start_algorithm(self):
         
         # Reset time states
-        self.paused_total_time = 0
+        self.elapsed = 0.0
+        self.paused_total_time = 0.0
         self.is_paused = False
         self.pause_time = None
         self.stop_algorithm = False
@@ -191,6 +188,7 @@ class algorithm_scene(bg.background):
             return
         if self.algorithm.running:
             self.algorithm.step()
+            self.algorithm.calc_delta_time()
     def select_in_menu(self):
         for algorithm_button in self.buttons[3].options:
             if algorithm_button.is_called:
@@ -201,12 +199,14 @@ class algorithm_scene(bg.background):
                 if self.prev_algo_done:
                     self.prev_algorithm_name = glb.selected_algorithm  # Save BEFORE it changes
                     self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
-                    self.prev_elapsed_time = self.algorithm.total_time() - self.paused_total_time
+                    self.prev_elapsed_time = self.elapsed
                 else:
                     # Prevent crash if algorithm was not started
+                    
                     self.prev_algorithm_name = None
                     self.prev_visited_count = 0
                     self.prev_elapsed_time = 0.0
+                self.elapsed = 0.0    
                 self.algorithm = None    
                 self.prev_algo_done = False
                 # Set the new algorithm
@@ -232,7 +232,8 @@ class algorithm_scene(bg.background):
             self.buttons[0].text = "Start Algorithm"
             self.buttons[0].call_back = lambda: self.start_algorithm()
             # Reset time states
-            self.paused_total_time = 0
+            self.elapsed = 0.0
+            self.paused_total_time = 0.0
             self.is_paused = False
             self.pause_time = None
             self.stop_algorithm = False
@@ -266,14 +267,16 @@ class algorithm_scene(bg.background):
                 if not self.is_paused:
                     self.buttons[0].text = "Continue"
                     self.pause_time = time.time()
+                    
                     self.is_paused = True
                 
             else:    
                 self.buttons[0].text = "Stop"
                 if self.is_paused and self.pause_time is not None:
-                    self.paused_total_time += time.time() - self.pause_time
+                    self.paused_total_time = time.time() - self.pause_time
                     print(f"Paused for {time.time() - self.pause_time:.2f} seconds.")
                     print(f"Total paused time: {self.paused_total_time:.2f} seconds.")
+                    self.algorithm.delta_time = max (0.0, self.algorithm.delta_time - self.paused_total_time)
                     self.is_paused = False
                     self.pause_time = None 
                 

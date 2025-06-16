@@ -38,7 +38,7 @@ class UCS(algos.searching_algorithms):
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
-            self.stop_timer()
+  
             self.reconstruct_path(current_node)
             return
 
