@@ -162,8 +162,8 @@ class algorithm_scene(bg.background):
 
         print(f"Starting {glb.selected_algorithm} algorithm.")
         self.algorithm.start()
-        # if (self.algorithm.running):
-        #     self.modal.visible = True
+        if (self.algorithm.running):
+            self.modal.visible = True
 
     def add_function_to_button(self):
         self.buttons[0].call_back = lambda: self.start_algorithm()
@@ -356,8 +356,8 @@ class algorithm_scene(bg.background):
                                       self.base_y + self.algorithm.path[state_index + 1][0] * self.cell_size + self.cell_size // 2), 3)
             #draw the modal
             
-        # if (self.algorithm.running):
-        #     self.modal.draw(screen)
+        if (self.algorithm.running):
+            self.modal.draw(screen)
 
         self.render_metrics(screen)   
                 
