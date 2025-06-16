@@ -153,6 +153,7 @@ class algorithm_scene(bg.background):
         self.stop_algorithm = False
         # Reset the algorithm 
         self.algorithm = None
+        self.prev_algo_done = False
         # Apply the pending selection now
         if glb.pending_algorithm:
             glb.selected_algorithm = glb.pending_algorithm
@@ -266,7 +267,7 @@ class algorithm_scene(bg.background):
         
 
         # CHANGE FUNCTIONS OF BUTTONS
-        self.multi_button_function()
+        self.pause_continue_restart()
         
 
 
@@ -274,7 +275,7 @@ class algorithm_scene(bg.background):
             return next_scene          
         return 'algorithm_scene'
     
-    def multi_button_function(self):
+    def pause_continue_restart(self):
         # Stop the algorithm if it is running
         if self.algorithm and self.algorithm.running:
             self.buttons[0].call_back = lambda: self.stop_algorithm_function()

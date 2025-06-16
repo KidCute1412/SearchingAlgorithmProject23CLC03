@@ -24,7 +24,7 @@ class IDAStar(algos.searching_algorithms):
     def step(self):
         if not self.running or self.solution_found:
             return
-
+        bg.pygame.time.delay(self.delay_time)  # Add a delay to visualize the IDA* process
         while self.stack:
             current_node, g = self.stack.pop()
 
@@ -39,7 +39,7 @@ class IDAStar(algos.searching_algorithms):
             self.visited_nodes.add(current_node.state)
             self.visited_this_threshold.add(current_node.state)
             self.visited_count += 1
-            bg.pygame.time.delay(self.delay_time)
+            
 
             if self.maze.is_goal_state(current_node.state):
                 self.running = False
