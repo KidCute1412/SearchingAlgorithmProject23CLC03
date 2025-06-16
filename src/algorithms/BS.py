@@ -17,12 +17,12 @@ class BS(algos.searching_algorithms):
             return
 
         next_level = []
-
+        bg.pygame.time.delay(self.delay_time)
         for current_node in self.queue:
             if current_node.state in self.visited_nodes:
                 continue
 
-            bg.pygame.time.delay(self.delay_time)
+            
             self.visited_nodes.add(current_node.state)
             self.visited_count += 1
             if self.maze.is_goal_state(current_node.state):

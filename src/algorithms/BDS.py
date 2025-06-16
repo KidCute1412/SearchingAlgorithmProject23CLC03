@@ -5,7 +5,7 @@ import scenes.background as bg
 class BDS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
-        self.delay_time = 50  # delay time in milliseconds for visualization
+        self.delay_time = 10  # delay time in milliseconds for visualization
 
     def start(self):
         super().start()
@@ -20,7 +20,7 @@ class BDS(algos.searching_algorithms):
     def step(self):
         if not self.running or (not self.frontier_start and not self.frontier_goal):
             return
-
+        bg.pygame.time.delay(self.delay_time) # delay for visualization
         def expand_frontier(frontier, visited_this, visited_other):
             if not frontier:
                 return None
@@ -31,7 +31,7 @@ class BDS(algos.searching_algorithms):
             visited_this[current_node.state] = current_node
             self.visited_nodes.add(current_node.state)
             self.visited_count += 1
-            bg.pygame.time.delay(self.delay_time) 
+            
 
             # Check for meeting point
             if current_node.state in visited_other:
