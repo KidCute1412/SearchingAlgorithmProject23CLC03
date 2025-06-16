@@ -117,7 +117,11 @@ class DropDownMenu:
                 
 
         
-        return return_value                         
+        return return_value    
+    
+    
+    def is_opened(self):
+        return self.is_open                     
         
 
   

@@ -23,7 +23,9 @@ class algorithm_scene(bg.background):
         self.draw_buttons()
         self.add_function_to_button()
         self.background_image = None
-
+        self.ignore_next_click = False
+        self.last_algorithm_select_time = 0.0
+        self.block_draw_delay = 0.5  # giây
         # for rendering the map
         self.cell_size = glb.CELL_SIZE
         #self.map_data = copy.deepcopy(load_res.get_map(glb.selected_map))  # Copy the map data to avoid modifying the original
@@ -212,6 +214,8 @@ class algorithm_scene(bg.background):
                 # Set the new algorithm
                 glb.pending_algorithm = algorithm_button.text
                 algorithm_button.is_called = False
+                self.ignore_next_click = True  
+                self.last_algorithm_select_time = time.time()
                 print(f"Pending algorithm selected: {glb.pending_algorithm}")
                 break
           
@@ -242,7 +246,17 @@ class algorithm_scene(bg.background):
         self.select_in_menu()
            
         # CUSTOM BLOCK
+        current_time = time.time()
+        menu_open = any(isinstance(btn, but.DropDownMenu) and btn.is_open for btn in self.buttons)
+        block_input = current_time - self.last_algorithm_select_time < self.block_draw_delay
         for event in events:
+            if self.ignore_next_click:
+                self.ignore_next_click = False
+                continue
+            
+            if menu_open or block_input:
+                continue  
+
             if event.type == bg.pygame.MOUSEMOTION and event.buttons[0]:
                 self.custom_block(event.pos)
 
