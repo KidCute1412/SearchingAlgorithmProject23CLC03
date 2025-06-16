@@ -2,6 +2,7 @@ import scenes.background as bg
 import utils.global_settings as glb
 import utils.load_resources as load_res
 import algorithms.Algorithms as algos
+import algorithms.AStar as AStar
 import algorithms.DFS as DFS
 import algorithms.UCS as UCS
 import algorithms.BFS as BFS
@@ -64,8 +65,8 @@ class algorithm_scene(bg.background):
             self.algorithm = DFS.DFS()
         elif glb.selected_algorithm == 'BFS':
             self.algorithm = BFS.BFS()
-        # elif glb.selected_algorithm == 'A*':
-        #     self.algorithm = algos.AStar_algorithm(self.map_data)
+        elif glb.selected_algorithm == 'A*':
+            self.algorithm = AStar.AStar()
         elif glb.selected_algorithm == 'Beam Search':
             self.algorithm = BS.BS()
         elif glb.selected_algorithm == 'IDDFS':

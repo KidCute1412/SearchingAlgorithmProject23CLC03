@@ -16,7 +16,6 @@ class searching_algorithms:
         self.start_node = self.maze.start
         self.end_node = self.maze.end
         self.visited_nodes = set()
-        self.stack = []
         self.path = []
         self.running = False
         self.found_path = False
@@ -33,7 +32,6 @@ class searching_algorithms:
         self.start_node = self.maze.start
         self.end_node = self.maze.end
         self.visited_nodes.clear()
-        self.stack.clear()
         self.path.clear()
         self.running = False
         self.found_path = False
