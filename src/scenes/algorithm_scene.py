@@ -394,4 +394,7 @@ class algorithm_scene(bg.background):
         self.render_metrics(screen)   
                 
 
-      
+    def clean_up(self):
+        glb.selected_algorithm = None
+        glb.pending_algorithm = None
+        self.algorithm = None

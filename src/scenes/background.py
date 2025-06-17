@@ -70,7 +70,8 @@ class background:
         pass
     def render_algorithm(self, screen):
         pass
-    
+    def clean_up(self):
+        pass
 
     # COMMON DRAW METHOD
     def draw(self, screen):

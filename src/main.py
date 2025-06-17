@@ -26,9 +26,13 @@ class Game:
     def control_scene(self, next_scene):
         if bg.current_scene == next_scene:
             return
+        
         if next_scene not in bg.scenes:
             print(f"Scene '{next_scene}' does not exist.")
             return
+        self.current_scene.clean_up()
+        
+        
         if next_scene == 'welcome_scene':
             bg.current_scene = 'welcome_scene'
             self.current_scene = welcome.welcome_scene()
