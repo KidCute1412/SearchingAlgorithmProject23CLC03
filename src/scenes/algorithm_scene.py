@@ -53,6 +53,7 @@ class algorithm_scene(bg.background):
         self.prev_algorithm_name = None
         self.prev_visited_count = 0
         self.prev_elapsed_time = 0.0
+        self.prev_cost_type = None
         self.prev_algo_done = False
         #TIME
         self.elapsed = 0.0
@@ -134,10 +135,10 @@ class algorithm_scene(bg.background):
             if self.algorithm.cost_type is None:
                 text_cost = self.font.render(f"Does not use Cost", True, glb.BLACK)
             else:
-                text_cost = self.font.render(f"Using {self.algorithm.cost_type} Cost", True, glb.BLACK)
-            screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset)))
-            screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 30)))
-            screen.blit(text_cost, text_cost.get_rect(center=(screen_width // 2, y_offset + 60)))
+                text_cost = self.font.render(f"Using {self.algorithm.cost_type} Cost, Value = {self.algorithm.cost_val}", True, glb.BLACK)
+            screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset + 30)))
+            screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 60)))
+            screen.blit(text_cost, text_cost.get_rect(center=(screen_width // 2, y_offset)))
 
         # Previous algorithm stats
         if self.prev_algorithm_name and self.prev_visited_count is not 0:
@@ -145,8 +146,13 @@ class algorithm_scene(bg.background):
             text_prev_name = self.font.render(f"Previous: {self.prev_algorithm_name}", True, (120, 120, 120))
             text_prev_visited = self.font.render(f"Visited Nodes: {self.prev_visited_count}", True, (120, 120, 120))
             text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
-
-            screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2 + 300, prev_y_offset)))
+            if self.prev_cost_type is None:
+                text_prev_cost = self.font.render(f"Did not use Cost", True, (120, 120, 120))
+            else:
+                text_prev_cost = self.font.render(f"Used {self.prev_cost_type} Cost", True, (120, 120, 120))
+            
+            screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2 + 300, prev_y_offset - 30)))
+            screen.blit(text_prev_cost, text_prev_cost.get_rect(center=(screen_width // 2 + 300, prev_y_offset)))
             screen.blit(text_prev_visited, text_prev_visited.get_rect(center=(screen_width // 2 + 300, prev_y_offset + 30)))
             screen.blit(text_prev_time, text_prev_time.get_rect(center=(screen_width // 2 + 300, prev_y_offset + 60)))
 
@@ -216,6 +222,7 @@ class algorithm_scene(bg.background):
                     self.prev_algorithm_name = glb.selected_algorithm  # Save BEFORE it changes
                     self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
                     self.prev_elapsed_time = self.elapsed
+                    self.prev_cost_type = self.algorithm.cost_type
 
                 # Reset TIME and other states    
                 self.elapsed = 0.0    
@@ -336,7 +343,7 @@ class algorithm_scene(bg.background):
         x = (mouse_pos[0] - self.base_x) // self.cell_size
         y = (mouse_pos[1] - self.base_y) // self.cell_size
 
-        # Nếu không phải force và vẫn cùng ô thì bỏ qua
+
         if not force_draw and (prev_x, prev_y) == (x, y):
             return
 

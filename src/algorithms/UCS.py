@@ -10,6 +10,7 @@ class UCS(algos.searching_algorithms):
         self.current_cost = {}
         self.delay_time = 10  # delay time in milliseconds for visualization
         self.cost_type = 'G'
+        self.cost_val = 0
 
     def start(self):
         super().start()
@@ -34,6 +35,7 @@ class UCS(algos.searching_algorithms):
 
         bg.pygame.time.delay(self.delay_time)  
         self.visited_nodes.add(current_node.state)
+        self.cost_val = current_node.path_cost
         self.visited_count += 1
         self.current_node = current_node  
 
