@@ -1,4 +1,3 @@
-
 import utils.global_settings as glb
 import utils.load_resources as load_res
 import scenes.background as bg
@@ -6,14 +5,8 @@ import scenes.welcome_scene as welcome
 import scenes.algorithm_scene as algorithm_scene
 
 
-
-
-
-
-
 class Game:
     def __init__(self):
-        
         load_res.load_images()
         load_res.load_map()
         self.screen = bg.pygame.display.set_mode(glb.DEFAULT_SIZE)

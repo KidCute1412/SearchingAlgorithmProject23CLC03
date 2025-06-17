@@ -131,9 +131,13 @@ class algorithm_scene(bg.background):
 
             text_visited = self.font.render(f"Visited Nodes: {self.algorithm.visited_count}", True, glb.BLACK)
             text_time = self.font.render(f"Elapsed Time: {self.elapsed:.2f} s", True, glb.BLACK)
-
+            if self.algorithm.cost_type is None:
+                text_cost = self.font.render(f"Does not use Cost", True, glb.BLACK)
+            else:
+                text_cost = self.font.render(f"Using {self.algorithm.cost_type} Cost", True, glb.BLACK)
             screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset)))
             screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 30)))
+            screen.blit(text_cost, text_cost.get_rect(center=(screen_width // 2, y_offset + 60)))
 
         # Previous algorithm stats
         if self.prev_algorithm_name and self.prev_visited_count is not 0:

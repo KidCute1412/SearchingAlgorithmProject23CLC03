@@ -24,6 +24,7 @@ class searching_algorithms:
         self.delta_time = None
         self.delay_time = None
         self.visited_count = 0
+        self.cost_type = None
         self.font = bg.pygame.font.SysFont("Arial", 24)
    
     def start(self):

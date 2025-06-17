@@ -12,5 +12,11 @@ class Node():
     def f(self):
         return self.path_cost + self.heuristic
     
+    def g(self):
+        return self.path_cost
+    
+    def h(self):
+        return self.heuristic
+    
     def __lt__(self, other):
         return self.f() < other.f()

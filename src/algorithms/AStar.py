@@ -13,6 +13,7 @@ class AStar(algos.searching_algorithms):
         self.open_set = set()
         self.closed_set = set()
         self.delay_time = 50 # delay time in milliseconds for visualization
+        self.cost_type = 'F'
 
     def start(self):
         super().start()
