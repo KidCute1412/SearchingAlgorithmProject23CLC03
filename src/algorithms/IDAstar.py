@@ -12,6 +12,7 @@ class IDAStar(algos.searching_algorithms):
         self.visited_count_last_threshold = 0
         self.failed_attempts = 0
         self.cost_type = 'F'
+        self.cost_val = 0
 
     def start(self):
         super().start()
@@ -58,6 +59,7 @@ class IDAStar(algos.searching_algorithms):
 
         bg.pygame.time.delay(self.delay_time)
         self.visited_nodes.add(current_node.state)
+        self.cost_val = current_node.path_cost + current_node.heuristic
         self.visited_this_threshold.add(current_node.state)
         self.visited_count += 1
 

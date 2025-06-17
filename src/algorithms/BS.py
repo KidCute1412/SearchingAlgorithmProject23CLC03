@@ -8,6 +8,7 @@ class BS(algos.searching_algorithms):
         self.beam_width = beam_width
         self.delay_time = 50  # delay time in milliseconds for visualization
         self.cost_type = 'H'
+        self.cost_val = 0
 
     def start(self):
         super().start()
@@ -40,6 +41,7 @@ class BS(algos.searching_algorithms):
                     child_node = node.Node(neighbor, current_node)
                     next_level.append(child_node)
 
-        # Sắp xếp theo heuristic và giữ lại beam_width node tốt nhất
+    
         next_level.sort(key=lambda n: self.maze.heuristic(n.state))
+        self.cost_val = self.maze.heuristic(next_level[0].state)
         self.queue = next_level[:self.beam_width]
