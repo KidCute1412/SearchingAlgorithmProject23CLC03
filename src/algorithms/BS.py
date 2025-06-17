@@ -6,7 +6,7 @@ class BS(algos.searching_algorithms):
     def __init__(self, beam_width=10):
         super().__init__()
         self.beam_width = beam_width
-        self.delay_time = 50  # delay time in milliseconds for visualization
+        self.delay_time = 100  # delay time in milliseconds for visualization
         self.cost_type = 'H'
         self.cost_val = 0
 

@@ -12,7 +12,7 @@ class AStar(algos.searching_algorithms):
         super().__init__()
         self.open_set = set()
         self.closed_set = set()
-        self.delay_time = 50 # delay time in milliseconds for visualization
+        self.delay_time = 30 # delay time in milliseconds for visualization
         self.cost_type = 'F'
         self.cost_val = 0
 
