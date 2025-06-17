@@ -43,5 +43,4 @@ class BS(algos.searching_algorithms):
 
     
         next_level.sort(key=lambda n: self.maze.heuristic(n.state))
-        self.cost_val = self.maze.heuristic(next_level[0].state)
         self.queue = next_level[:self.beam_width]
