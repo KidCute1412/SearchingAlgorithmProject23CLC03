@@ -136,6 +136,8 @@ class algorithm_scene(bg.background):
             text_time = self.font.render(f"Elapsed Time: {self.elapsed:.2f} s", True, glb.BLACK)
             if self.is_paused:
                 text_cost = self.font.render(f"Paused!", True, glb.BLACK)
+            elif self.modal_shown:
+                text_cost = self.font.render(f"Blocked!", True, glb.BLACK)
             elif self.algorithm.found_path is False:
                 text_cost = self.font.render(f"Running{pause[self.incrementer]}", True, glb.BLACK)
             else:
