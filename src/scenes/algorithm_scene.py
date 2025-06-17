@@ -25,6 +25,7 @@ class algorithm_scene(bg.background):
         self.add_function_to_button()
         self.background_image = None
         self.modal = modal.Modal("No path was found!")
+        self.modal_shown = False
         # for rendering the map
         self.cell_size = glb.CELL_SIZE
         #self.map_data = copy.deepcopy(load_res.get_map(glb.selected_map))  # Copy the map data to avoid modifying the original
@@ -162,8 +163,6 @@ class algorithm_scene(bg.background):
 
         print(f"Starting {glb.selected_algorithm} algorithm.")
         self.algorithm.start()
-        if (self.algorithm.running):
-            self.modal.visible = True
 
     def add_function_to_button(self):
         self.buttons[0].call_back = lambda: self.start_algorithm()
@@ -190,6 +189,10 @@ class algorithm_scene(bg.background):
         if self.algorithm.running:
             self.algorithm.step()
             self.algorithm.calc_delta_time()
+        if self.algorithm.running == False and self.algorithm.found_path == False and self.modal_shown == False:
+            self.modal.visible = True
+            self.modal_shown = True
+            
     def select_in_menu(self):
         for algorithm_button in self.buttons[3].options:
             if algorithm_button.is_called:
@@ -210,6 +213,8 @@ class algorithm_scene(bg.background):
                 self.elapsed = 0.0    
                 self.algorithm = None    
                 self.prev_algo_done = False
+                self.modal_shown = False 
+                self.modal.visible = False
                 # Set the new algorithm
                 glb.pending_algorithm = algorithm_button.text
                 algorithm_button.is_called = False
@@ -217,7 +222,7 @@ class algorithm_scene(bg.background):
                 break
           
     def update(self, events):
-        next_scene = super().update(events)
+        next_scene = super().update(events)        
         self.modal.handle_event(events)
         self.buttons: list[but.Button] = self.buttons
         if self.buttons[2].is_called: # reset the map (randomize)
@@ -356,9 +361,8 @@ class algorithm_scene(bg.background):
                                       self.base_y + self.algorithm.path[state_index + 1][0] * self.cell_size + self.cell_size // 2), 3)
             #draw the modal
             
-        if (self.algorithm.running):
+        if self.modal.visible:
             self.modal.draw(screen)
-
         self.render_metrics(screen)   
                 
 

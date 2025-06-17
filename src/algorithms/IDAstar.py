@@ -23,6 +23,8 @@ class IDAStar(algos.searching_algorithms):
 
     def step(self):
         if not self.running or self.solution_found:
+            self.found_path = False
+            self.running = False
             return
 
         while self.stack:

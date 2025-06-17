@@ -14,6 +14,8 @@ class BS(algos.searching_algorithms):
 
     def step(self):
         if not self.queue or not self.running:
+            self.found_path = False
+            self.running = False
             return
 
         next_level = []

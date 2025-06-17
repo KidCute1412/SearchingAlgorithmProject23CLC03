@@ -13,13 +13,12 @@ class Modal:
         self.close_button = button.Button(
             text="X", 
             position=(self.width - 30, 10), 
-            size=(20, 20),
+            size=(25, 25),
             call_back=self.hide)  # call the reference value
         self.visible = False
 
     def hide(self):
         self.visible = False
-
     def draw(self, screen):
         if not self.visible:
             return
@@ -43,9 +42,7 @@ class Modal:
         else:
             for event in events:
                 if event.type in [pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION]:
-                    # Dịch tọa độ về tương đối với modal
                     rel_pos = (event.pos[0] - self.rect.left, event.pos[1] - self.rect.top)
-                    # Tạo sự kiện mới với tọa độ đã dịch
                     new_event = pygame.event.Event(event.type, {'pos': rel_pos, 'button': getattr(event, 'button', None)})
                     self.close_button.handle_event([new_event])
                 else:

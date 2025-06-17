@@ -20,7 +20,9 @@ class UCS(algos.searching_algorithms):
         self.current_cost[start_state] = 0
 
     def step(self):
-        if not self.running or not self.pq:
+        if self.running == False or len(self.pq) == 0:
+            self.found_path = False
+            self.running = False
             return
         
         _, current_node = heapq.heappop(self.pq) #take out the node with smallest cost
