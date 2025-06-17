@@ -35,7 +35,6 @@ class AStar(algos.searching_algorithms):
         
         bg.pygame.time.delay(self.delay_time)  # Add a delay to visualize the A* process
         self.visited_nodes.add(current_node.state)
-        self.cost_val = current_node.path_cost + current_node.heuristic
         self.visited_count += 1
         self.current_node = current_node
         
@@ -43,6 +42,7 @@ class AStar(algos.searching_algorithms):
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
+            self.cost_val = current_node.path_cost 
             self.reconstruct_path(current_node)
             return
         

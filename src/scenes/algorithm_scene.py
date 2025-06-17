@@ -48,12 +48,12 @@ class algorithm_scene(bg.background):
         self.algorithm = None
         self.stop_algorithm = False
         self.previous_mouse_pos = None
-       
+        self.incrementer = 0
         
         self.prev_algorithm_name = None
         self.prev_visited_count = 0
         self.prev_elapsed_time = 0.0
-        self.prev_cost_type = None
+        self.prev_cost = None
         self.prev_algo_done = False
         #TIME
         self.elapsed = 0.0
@@ -127,15 +127,21 @@ class algorithm_scene(bg.background):
             
             if not self.is_paused and not self.algorithm.found_path and self.algorithm.running:
                 self.elapsed += self.algorithm.delta_time
+            self.incrementer = (self.incrementer + 1) % 12
 
+            pause = [".", ".", ".", ".", "..", "..", "..", "..", "...", "...", "...", "...", ]
 
 
             text_visited = self.font.render(f"Visited Nodes: {self.algorithm.visited_count}", True, glb.BLACK)
             text_time = self.font.render(f"Elapsed Time: {self.elapsed:.2f} s", True, glb.BLACK)
-            if self.algorithm.cost_type is None:
-                text_cost = self.font.render(f"Does not use Cost", True, glb.BLACK)
+            if self.is_paused:
+                text_cost = self.font.render(f"Paused!", True, glb.BLACK)
+            elif self.modal_shown:
+                text_cost = self.font.render(f"Blocked!", True, glb.BLACK)
+            elif self.algorithm.found_path is False:
+                text_cost = self.font.render(f"Running{pause[self.incrementer]}", True, glb.BLACK)
             else:
-                text_cost = self.font.render(f"Using {self.algorithm.cost_type} Cost, Value = {self.algorithm.cost_val}", True, glb.BLACK)
+                text_cost = self.font.render(f"Total Path Cost: {len(self.algorithm.path)}", True, glb.BLACK)
             screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset + 30)))
             screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 60)))
             screen.blit(text_cost, text_cost.get_rect(center=(screen_width // 2, y_offset)))
@@ -146,10 +152,7 @@ class algorithm_scene(bg.background):
             text_prev_name = self.font.render(f"Previous: {self.prev_algorithm_name}", True, (120, 120, 120))
             text_prev_visited = self.font.render(f"Visited Nodes: {self.prev_visited_count}", True, (120, 120, 120))
             text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
-            if self.prev_cost_type is None:
-                text_prev_cost = self.font.render(f"Did not use Cost", True, (120, 120, 120))
-            else:
-                text_prev_cost = self.font.render(f"Used {self.prev_cost_type} Cost", True, (120, 120, 120))
+            text_prev_cost = self.font.render(f"Total Path Cost: {self.prev_cost} s", True, (120, 120, 120))
             
             screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2 + 300, prev_y_offset - 30)))
             screen.blit(text_prev_cost, text_prev_cost.get_rect(center=(screen_width // 2 + 300, prev_y_offset)))
@@ -222,7 +225,7 @@ class algorithm_scene(bg.background):
                     self.prev_algorithm_name = glb.selected_algorithm  # Save BEFORE it changes
                     self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
                     self.prev_elapsed_time = self.elapsed
-                    self.prev_cost_type = self.algorithm.cost_type
+                    self.prev_cost = len(self.algorithm.path)
 
                 # Reset TIME and other states    
                 self.elapsed = 0.0    
