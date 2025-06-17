@@ -6,74 +6,85 @@ import scenes.background as bg
 class IDAStar(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
-        self.delay_time = 50  # delay time in milliseconds for visualization
+        self.delay_time = 25
+        self.threshold = 0
+        self.next_threshold = float('inf')
+        self.visited_count_last_threshold = 0
+        self.failed_attempts = 0
+        self.cost_type = 'F'
 
     def start(self):
         super().start()
-        self.start_node = node.Node(self.maze.initial_state())
-        self.end_node = self.maze.goal_state()
-        self.threshold = self.maze.heuristic(self.start_node.state)
-        self.path = []
-        self.visited_nodes = set()
-        self.running = True
-        self.stack = [(self.start_node, 0)]
+        initial_node = node.Node(
+            state=self.maze.initial_state(),
+            heuristic=self.maze.heuristic(self.maze.initial_state())
+        )
+        self.threshold = initial_node.heuristic
         self.next_threshold = float('inf')
+        self.visited_count_last_threshold = 0
+        self.failed_attempts = 0
+        self.reset_iteration()
+
+    def reset_iteration(self):
+        initial_node = node.Node(
+            state=self.maze.initial_state(),
+            heuristic=self.maze.heuristic(self.maze.initial_state())
+        )
+        self.stack = [(initial_node, 0)]
+        self.visited_nodes = set()
         self.visited_this_threshold = set()
-        self.solution_found = False
 
     def step(self):
-        if not self.running or self.solution_found:
-            self.found_path = False
-            self.running = False
-            return
-        bg.pygame.time.delay(self.delay_time)  # Add a delay to visualize the IDA* process
-        while self.stack:
-            current_node, g = self.stack.pop()
-
-            f = g + self.maze.heuristic(current_node.state)
-            if f > self.threshold:
-                self.next_threshold = min(self.next_threshold, f)
-                continue
-
-            if current_node.state in self.visited_this_threshold:
-                continue
-
-            self.visited_nodes.add(current_node.state)
-            self.visited_this_threshold.add(current_node.state)
-            self.visited_count += 1
+        if not self.stack and self.running and not self.found_path:
+            if len(self.visited_nodes) == self.visited_count_last_threshold and self.failed_attempts == 20:
+                self.running = False
+                self.found_path = False
+                return
             
-
-            if self.maze.is_goal_state(current_node.state):
-                self.running = False
-                self.solution_found = True
-           
-                self.reconstruct_path(current_node)
-                return
-
-            for neighbor_state, direction, cost in reversed(self.maze.get_neighbors(current_node.state)):
-                if neighbor_state not in self.visited_this_threshold:
-                    neighbor_node = node.Node(neighbor_state, current_node, direction,
-                                            path_cost=g + cost,
-                                            depth=current_node.depth + 1,
-                                            heuristic=self.maze.heuristic(neighbor_state))
-                    self.stack.append((neighbor_node, g + cost))
-
-            return 
-
-        
-        if not self.solution_found:
-            if self.next_threshold == float('inf'):
-                self.running = False
-                return
-
+            self.visited_count_last_threshold = len(self.visited_nodes)
+            self.failed_attempts += 1
             self.threshold = self.next_threshold
             self.next_threshold = float('inf')
+            self.reset_iteration()
+            return
+        
+        if not self.stack or not self.running:
+            return
 
-            self.stack = [(node.Node(self.maze.initial_state()), 0)]
+        current_node, current_cost = self.stack.pop()
+        
+        if current_node.state in self.visited_this_threshold:
+            return
 
-            self.visited_this_threshold = set()
-            self.visited_nodes = set()
+        bg.pygame.time.delay(self.delay_time)
+        self.visited_nodes.add(current_node.state)
+        self.visited_this_threshold.add(current_node.state)
+        self.visited_count += 1
 
+        
+        if self.maze.is_goal_state(current_node.state):
+            self.found_path = True
+            self.running = False
+            self.reconstruct_path(current_node)
+            return
 
-    
+        
+        f_cost = current_cost + self.maze.heuristic(current_node.state)
+        
+        
+        if f_cost > self.threshold:
+            self.next_threshold = min(self.next_threshold, f_cost)
+            return
 
+        
+        for neighbor_state, direction, cost in reversed(self.maze.get_neighbors(current_node.state)):
+            if neighbor_state not in self.visited_this_threshold:
+                neighbor_node = node.Node(
+                    state=neighbor_state,
+                    parent=current_node,
+                    action=direction,
+                    path_cost=current_cost + cost,
+                    depth=current_node.depth + 1,
+                    heuristic=self.maze.heuristic(neighbor_state)
+                )
+                self.stack.append((neighbor_node, current_cost + cost))

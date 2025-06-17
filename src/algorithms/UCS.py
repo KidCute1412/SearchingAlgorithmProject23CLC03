@@ -9,6 +9,7 @@ class UCS(algos.searching_algorithms):
         self.pq = []
         self.current_cost = {}
         self.delay_time = 10  # delay time in milliseconds for visualization
+        self.cost_type = 'G'
 
     def start(self):
         super().start()
