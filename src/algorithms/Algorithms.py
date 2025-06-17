@@ -25,20 +25,6 @@ class searching_algorithms:
         self.delay_time = None
         self.visited_count = 0
         self.font = bg.pygame.font.SysFont("Arial", 24)
-    def update_map(self):
-        self.maze = maze.Maze(glb.CURRENT_MAP)
-        if not self.maze:
-            raise ValueError("Maze data is empty. Please load a valid maze.")
-        self.start_node = self.maze.start
-        self.end_node = self.maze.end
-        self.visited_nodes.clear()
-        self.path.clear()
-        self.running = False
-        self.found_path = False
-        self.start_time = None
-        self.delta_time = None
-        self.delay_time = None
-        self.visited_count = 0  
    
     def start(self):
         self.running = True

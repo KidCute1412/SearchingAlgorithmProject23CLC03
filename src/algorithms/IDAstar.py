@@ -23,6 +23,8 @@ class IDAStar(algos.searching_algorithms):
 
     def step(self):
         if not self.running or self.solution_found:
+            self.found_path = False
+            self.running = False
             return
         bg.pygame.time.delay(self.delay_time)  # Add a delay to visualize the IDA* process
         while self.stack:

@@ -9,9 +9,13 @@ class IDDFS(algos.searching_algorithms):
         super().__init__()
         self.delay_time = 1
         self.depth_limit = 0  # current depth limit
+        self.visited_count_last_depth = 0  #used to stored the number of visited nodes in the latest depth
+        self.failed_attempts = 0
     def start(self):
         super().start()
         self.depth_limit = 0  # start from level 0
+        self.visited_count_last_depth = 0  
+
         self.reset_iteration()
 
     def reset_iteration(self):
@@ -19,14 +23,15 @@ class IDDFS(algos.searching_algorithms):
         self.visited_nodes = set()
 
     def step(self):
-        #avoid infinite loop when there's no goals/paths, 800 cuz there are maximally 800 nodes 
-        if self.depth_limit > 800: 
-            self.running = False
-            print("No solution found.")
-            return
-
+        #avoid infinite loop when there's no goals/paths
         if not self.stack and self.running and not self.found_path:
-            # deepen and repeat dfs
+            if len(self.visited_nodes) == self.visited_count_last_depth and self.failed_attempts == 20: #if the number of visited node remains the same and failed attempts reached 20, there's no path found
+                self.running = False
+                self.found_path = False
+                return
+            # if not, update the value and keep iterating
+            self.visited_count_last_depth = len(self.visited_nodes)
+            self.failed_attempts += 1
             self.depth_limit += 1
             self.reset_iteration()
             return
@@ -45,7 +50,6 @@ class IDDFS(algos.searching_algorithms):
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
-      
             self.reconstruct_path(current_node)
             return
 

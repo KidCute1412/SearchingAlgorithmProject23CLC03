@@ -14,6 +14,8 @@ class DFS(algos.searching_algorithms):
 
     def step(self):
         if not self.stack or not self.running:
+            self.found_path = False
+            self.running = False
             return
         current_node = self.stack.pop()
         if current_node.state in self.visited_nodes:

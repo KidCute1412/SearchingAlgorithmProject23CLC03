@@ -19,6 +19,8 @@ class BDS(algos.searching_algorithms):
 
     def step(self):
         if not self.running or (not self.frontier_start and not self.frontier_goal):
+            self.found_path = False
+            self.running = False
             return
         bg.pygame.time.delay(self.delay_time) # delay for visualization
         def expand_frontier(frontier, visited_this, visited_other):
