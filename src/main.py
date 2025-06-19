@@ -23,6 +23,7 @@ class Game:
         if next_scene not in bg.scenes:
             print(f"Scene '{next_scene}' does not exist.")
             return
+        
         self.current_scene.clean_up()
         
         

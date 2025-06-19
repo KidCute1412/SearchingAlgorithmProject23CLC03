@@ -23,7 +23,7 @@ class Modal:
         if not self.visible:
             return
         
-        self.surface.fill((138, 206, 0))
+        self.surface.fill(glb.PINK)
         pygame.draw.rect(self.surface, glb.BLACK, self.surface.get_rect(), 2)
 
         # Render message
