@@ -288,6 +288,10 @@ class algorithm_scene(bg.background):
         next_scene = super().update(events)        
         # MODAL HANDLING
         self.modal.handle_event(events)
+        if self.modal.visible:
+            mouse_pos = bg.pygame.mouse.get_pos()
+            if self.modal.rect.collidepoint(mouse_pos):
+                self.ignore_next_click = True  # Ignore clicks while modal is open
         
         
         #RANDOMIZE MAP
