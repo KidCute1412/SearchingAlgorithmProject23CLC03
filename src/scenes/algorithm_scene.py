@@ -102,12 +102,15 @@ class algorithm_scene(bg.background):
     
         button1 = but.Button("Start Algorithm", (glb.DEFAULT_SIZE[0] // 2 - 100, 0), (200, 50))
         button2 = but.Button("Exit", (glb.DEFAULT_SIZE[0] - 200, 0), (200, 50))
-        button3 = but.Button("Randomize Map", (0, 0), (250, 50))
-        
-        menu = but.DropDownMenu("Select Algorithm", glb.ALGORITHMS, (100, 100), (300, 50))
+        button3 = but.Button("Randomize Map", (0, 0), (200, 50))
+        button4 = but.Button("Narrow Map", (0, 50), (200, 50))
+        button5 = but.Button("Room Map", (200, 0), (200, 50))
+        menu = but.DropDownMenu("Select Algorithm", glb.ALGORITHMS, (100, 125), (300, 50))
         self.buttons.append(button1)
         self.buttons.append(button2)
         self.buttons.append(button3)
+        self.buttons.append(button4)
+        self.buttons.append(button5)
         self.buttons.append(menu)
 
 
@@ -189,18 +192,19 @@ class algorithm_scene(bg.background):
         self.buttons[0].call_back = lambda: self.start_algorithm()
         self.buttons[1].call_back = lambda: glb.return_scene('welcome_scene')
         self.buttons[2].call_back = lambda: glb.randomize_map_data()
-        self.buttons[3].add_function_to_button(0, lambda: glb.choose_algorithm('DFS'))
-        self.buttons[3].add_function_to_button(1, lambda: glb.choose_algorithm('BFS'))
-        self.buttons[3].add_function_to_button(2, lambda: glb.choose_algorithm('A*'))
-        self.buttons[3].add_function_to_button(3, lambda: glb.choose_algorithm('Beam Search'))
-        self.buttons[3].add_function_to_button(4, lambda: glb.choose_algorithm('IDDFS'))
-        self.buttons[3].add_function_to_button(5, lambda: glb.choose_algorithm('UCS'))
-        self.buttons[3].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
-        self.buttons[3].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
+        self.buttons[3].call_back = lambda: glb.generate_maze_prim()
+        self.buttons[4].call_back = lambda: glb.generate_maze_recursive_division()
+        self.buttons[5].add_function_to_button(0, lambda: glb.choose_algorithm('DFS'))
+        self.buttons[5].add_function_to_button(1, lambda: glb.choose_algorithm('BFS'))
+        self.buttons[5].add_function_to_button(2, lambda: glb.choose_algorithm('A*'))
+        self.buttons[5].add_function_to_button(3, lambda: glb.choose_algorithm('Beam Search'))
+        self.buttons[5].add_function_to_button(4, lambda: glb.choose_algorithm('IDDFS'))
+        self.buttons[5].add_function_to_button(5, lambda: glb.choose_algorithm('UCS'))
+        self.buttons[5].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
+        self.buttons[5].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
 
     def stop_algorithm_function(self):
         self.stop_algorithm = not self.stop_algorithm
-
 
     def step(self):
         if self.stop_algorithm:
@@ -215,7 +219,7 @@ class algorithm_scene(bg.background):
             self.modal_shown = True
             
     def select_in_menu(self):
-        for algorithm_button in self.buttons[3].options:
+        for algorithm_button in self.buttons[5].options:
             if algorithm_button.is_called:
                 # CHANGE BUTTON TEXT AND FUNCTION
                 self.buttons[0].text = "Start Algorithm"
@@ -242,7 +246,7 @@ class algorithm_scene(bg.background):
                 break
     
     def handle_randomize(self):
-        if self.buttons[2].is_called: # reset the map (randomize)
+        if self.buttons[2].is_called or self.buttons[3].is_called or self.buttons[4].is_called: # reset the map (randomize)
 
             self.map_data = glb.CURRENT_MAP
             self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
