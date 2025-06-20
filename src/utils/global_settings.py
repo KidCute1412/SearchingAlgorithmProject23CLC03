@@ -24,9 +24,6 @@ VISITED_COLOR = (255, 100, 100)  # Visited cell color
 FOUND_COLOR = (200, 255, 150)  # Found path color
 LINE_COLOR = (0, 100, 255)     # Line color for path visualization
 
-# Selection State
-
-
 # Supported Algorithms
 ALGORITHMS = ["DFS", "BFS", "A*", "Beam Search", "IDDFS", "UCS", "Bi-Directional Search", "IDA*"]
 

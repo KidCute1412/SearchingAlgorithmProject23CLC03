@@ -155,7 +155,7 @@ class algorithm_scene(bg.background):
             text_prev_name = self.font.render(f"Previous: {self.prev_algorithm_name}", True, (120, 120, 120))
             text_prev_visited = self.font.render(f"Visited Nodes: {self.prev_visited_count}", True, (120, 120, 120))
             text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
-            text_prev_cost = self.font.render(f"Total Path Cost: {self.prev_cost} s", True, (120, 120, 120))
+            text_prev_cost = self.font.render(f"Total Path Cost: {self.prev_cost}", True, (120, 120, 120))
             
             screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2 + 300, prev_y_offset - 30)))
             screen.blit(text_prev_cost, text_prev_cost.get_rect(center=(screen_width // 2 + 300, prev_y_offset)))
