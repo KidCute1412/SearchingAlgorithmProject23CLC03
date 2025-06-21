@@ -41,7 +41,7 @@ class BDS(algos.searching_algorithms):
 
             for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):
                 if neighbor not in visited_this:
-                    frontier.append(node.Node(neighbor, current_node))
+                    frontier.append(node.Node(neighbor, current_node, path_cost = current_node.path_cost + cost))
             return None
 
         
@@ -56,6 +56,7 @@ class BDS(algos.searching_algorithms):
             self.reconstruct_bidirectional_path(meet)
     
     def reconstruct_bidirectional_path(self, meet_state):
+        self.total_cost = self.visited_start[meet_state].path_cost + self.visited_goal[meet_state].path_cost - self.maze.get_cost(meet_state) + 1  # Adjust for double counting the meeting node cost
         path_start = []
         node_start = self.visited_start[meet_state]
         while node_start:

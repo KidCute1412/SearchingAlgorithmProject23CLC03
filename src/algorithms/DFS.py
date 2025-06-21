@@ -32,6 +32,6 @@ class DFS(algos.searching_algorithms):
         
         for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):
             if neighbor not in self.visited_nodes:
-                self.stack.append(node.Node(neighbor, current_node))
+                self.stack.append(node.Node(neighbor, current_node, path_cost=current_node.path_cost + cost))
         
 

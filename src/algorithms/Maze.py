@@ -31,6 +31,12 @@ class Maze():
         row, col = state
         return self.maze[row][col] != '0'
     
+    def get_cost(self, state):
+        row, col = state
+        if self.maze[row][col].isdigit():
+            return int(self.maze[row][col])
+        return 1
+       
     
     def get_neighbors(self, state):
         row, col = state
@@ -45,8 +51,12 @@ class Maze():
             new_state = (new_row, new_col)
             if self.in_bounds(new_state):
                 if self.walkable(new_state):
-                    neighbors.append((new_state, direction, 1)) # cost is 1
-        
+                    # neighbors.append((new_state, direction, 1)) # cost is 1
+                    if self.maze[new_row][new_col].isdigit():
+                        cost = int(self.maze[new_row][new_col])
+                        neighbors.append((new_state, direction, cost))
+                    else:
+                        neighbors.append((new_state, direction, 1))
         return neighbors
     
     def heuristic(self, state):

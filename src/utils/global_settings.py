@@ -1,4 +1,5 @@
 from http.client import FOUND
+from math import e
 from tkinter import CURRENT
 from tracemalloc import start
 
@@ -46,7 +47,17 @@ def randomize_map_data():
     map_data = reset_map_data()
     for y in range(MAP_ROWS):
         for x in range(MAP_COLS):
-            map_data[y][x] = '0' if random.random() < 0.3 else '1'  # 30% chance of being a wall
+            random_value = random.random()
+            if random_value < 0.3:
+                map_data[y][x] = '0'  # 30% chance of being a wall
+            elif random_value < 0.8:
+                map_data[y][x] = '1'
+            elif random_value < 0.9:
+                map_data[y][x] = '2'
+            else:
+                map_data[y][x] = '3'        
+    
+            #map_data[y][x] = '0' if random.random() < 0.3 else '1'  # 30% chance of being a wall
     total_nodes = MAP_ROWS * MAP_COLS
     start_index = random.randint(0, total_nodes - 1)
     end_index = random.randint(0, total_nodes - 1)
@@ -93,7 +104,14 @@ def generate_maze_prim():
         if map_data[y2][x2] == '0':
             wall_x = (x1 + x2) // 2
             wall_y = (y1 + y2) // 2
-            map_data[wall_y][wall_x] = '1'
+            ramdom_value = random.random()
+            if ramdom_value < 0.5:
+                map_data[wall_y][wall_x] = '1'
+            elif ramdom_value < 0.8:
+                map_data[wall_y][wall_x] = '2'
+            else:
+                map_data[wall_y][wall_x] = '3'        
+            map_data[y1][x1] = '1'  # Mark the first cell as part of the path
             map_data[y2][x2] = '1'
 
             for dx, dy in [(-2, 0), (2, 0), (0, -2), (0, 2)]:
@@ -169,7 +187,18 @@ def generate_maze_recursive_division():
     # Create border walls
     for y in range(MAP_ROWS):
         for x in range(MAP_COLS):
-            map_data[y][x] = '0' if x == 0 or y == 0 or x == MAP_COLS - 1 or y == MAP_ROWS - 1 else '1'
+            random_value = random.random()
+            #map_data[y][x] = '0' if x == 0 or y == 0 or x == MAP_COLS - 1 or y == MAP_ROWS - 1 else '1'
+            if x == 0 or y == 0 or x == MAP_COLS - 1 or y == MAP_ROWS - 1:
+                map_data[y][x] = '0'
+            else:
+                if random_value < 0.7:
+                    map_data[y][x] = '1'
+                elif random_value < 0.9:
+                    map_data[y][x] = '2'
+                else: 
+                    map_data[y][x] = '3'            
+
 
     divide(1, 1, MAP_COLS - 2, MAP_ROWS - 2, choose_orientation(MAP_COLS - 2, MAP_ROWS - 2))
 

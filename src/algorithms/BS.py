@@ -1,3 +1,4 @@
+from os import path
 import algorithms.Node as node
 import algorithms.Algorithms as algos
 import scenes.background as bg
@@ -38,7 +39,7 @@ class BS(algos.searching_algorithms):
 
             for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):
                 if neighbor not in self.visited_nodes:
-                    child_node = node.Node(neighbor, current_node)
+                    child_node = node.Node(neighbor, current_node, path_cost=current_node.path_cost + cost)
                     next_level.append(child_node)
 
     

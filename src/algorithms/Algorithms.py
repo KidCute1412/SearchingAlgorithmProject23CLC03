@@ -26,6 +26,7 @@ class searching_algorithms:
         self.visited_count = 0
         self.cost_type = None
         self.cost_val = None
+        self.total_cost = 0
         self.font = bg.pygame.font.SysFont("Arial", 24)
    
     def start(self):
@@ -42,7 +43,10 @@ class searching_algorithms:
     def step(self):
         pass
     def reconstruct_path(self, current = None):
+        self.total_cost = current.path_cost if current else 0
         while current:
             self.path.append(current.state)
             current = current.parent
         self.path.reverse()
+        
+ 

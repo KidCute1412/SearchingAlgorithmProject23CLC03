@@ -1,3 +1,4 @@
+from pydoc import text
 import scenes.background as bg
 import utils.global_settings as glb
 import utils.load_resources as load_res
@@ -37,6 +38,8 @@ class algorithm_scene(bg.background):
         self.map_data = glb.CURRENT_MAP
         self.colors = {
             '1': glb.PATH_COLOR,  # Path
+            '2': glb.PATH_COLOR,  # Custom color for '2'
+            '3': glb.PATH_COLOR,  # Custom color for '3'
             '0': glb.WALL_COLOR,  # Wall
             'S': glb.START_COLOR,    # Start
             'E': glb.END_COLOR,  # End
@@ -61,6 +64,11 @@ class algorithm_scene(bg.background):
         self.pause_time = None
         self.is_paused = False
         self.font = None  # Font for rendering metrics
+
+        # Cache
+        self.cost_value_display = {}  # Dictionary to hold cost text surfaces
+        self.cost_original_cache = {}
+        self.cost_cache = {}  # Cache for cost values to avoid redrawing them every time
     
     # UNCOMMENT THIS IF YOU WANT TO USE OTHER ALGORITHMS
     def set_algorithm(self):
@@ -83,6 +91,44 @@ class algorithm_scene(bg.background):
             self.algorithm = IDA.IDAStar()  
 
 
+    def load_cache_cost(self):
+        for y, row in enumerate(self.map_data):
+            for x, cell in enumerate(row):
+                if cell in ['0','1', '2', '3']:
+                    cost_value = int(cell)
+                    text = bg.pygame.font.SysFont(None, 24).render(str(cost_value), True, glb.BLACK)
+                    text_surface = bg.pygame.Surface(text.get_size(), bg.pygame.SRCALPHA)
+                    text_surface.blit(text, (0, 0))
+                    text_surface.set_alpha(100)
+                    self.cost_cache[(x, y)] = cost_value
+                    self.cost_original_cache[(x, y)] = cost_value
+                    self.cost_value_display[(x, y)] = text_surface
+
+    def update_cost_cache(self, x, y, cost_value):
+        font = bg.pygame.font.SysFont(None, 24)
+
+        if str(cost_value).isdigit():
+            text = font.render(str(cost_value), True, glb.BLACK)
+            text_surface = bg.pygame.Surface(text.get_size(), bg.pygame.SRCALPHA)
+            text_surface.blit(text, (0, 0))
+            text_surface.set_alpha(100)  # Set transparency to 100
+            self.cost_cache[(x, y)] = cost_value
+            self.cost_value_display[(x, y)] = text_surface
+
+    def render_cost_value(self, screen):    
+        # Draw the cost text if it exists in the cache
+        if not self.cost_cache:
+            self.load_cache_cost()
+        for (x, y), text_surface in self.cost_value_display.items():
+            if self.cost_cache.get((x, y)) == 0 or self.cost_cache.get((x, y)) == 1 or self.cost_cache.get((x, y)) is None:
+                continue
+            if (x, y) in self.cost_value_display and self.cost_value_display[(x, y)]:
+                text_rect = text_surface.get_rect(center=(
+                    self.base_x + x * self.cell_size + self.cell_size // 2,
+                    self.base_y + y * self.cell_size + self.cell_size // 2  
+                ))
+                screen.blit(text_surface, text_rect)        
+
     def render_map(self, screen):
         for y, row in enumerate(self.map_data):
             for x, cell in enumerate(row):
@@ -97,6 +143,10 @@ class algorithm_scene(bg.background):
                 bg.pygame.draw.rect(screen, color, rect)
                 # Draw the border
                 bg.pygame.draw.rect(screen, glb.BLACK, rect, 1)
+                # draw cost text
+        # Draw the cost values on the map
+        self.render_cost_value(screen)
+             
 
     def draw_buttons(self):
     
@@ -144,7 +194,7 @@ class algorithm_scene(bg.background):
             elif self.algorithm.found_path is False:
                 text_cost = self.font.render(f"Running{pause[self.incrementer]}", True, glb.BLACK)
             else:
-                text_cost = self.font.render(f"Total Path Cost: {len(self.algorithm.path)}", True, glb.BLACK)
+                text_cost = self.font.render(f"Total Path Cost: {self.algorithm.total_cost}", True, glb.BLACK)
             screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset + 30)))
             screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 60)))
             screen.blit(text_cost, text_cost.get_rect(center=(screen_width // 2, y_offset)))
@@ -229,7 +279,7 @@ class algorithm_scene(bg.background):
                     self.prev_algorithm_name = glb.selected_algorithm  # Save BEFORE it changes
                     self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
                     self.prev_elapsed_time = self.elapsed
-                    self.prev_cost = len(self.algorithm.path)
+                    self.prev_cost = self.algorithm.total_cost
 
                 # Reset TIME and other states    
                 self.elapsed = 0.0    
@@ -269,6 +319,11 @@ class algorithm_scene(bg.background):
             self.modal_shown = False
             # Reset the algorithm
             self.algorithm = None
+            # Cache cost
+            self.cost_original_cache.clear()
+            self.cost_cache.clear()  # Clear the cache to redraw costs
+            self.load_cache_cost()  # Reload the cache with the new map data
+            
             
     def handle_custom_block(self, events):
         current_time = time.time()
@@ -286,6 +341,9 @@ class algorithm_scene(bg.background):
 
             if event.type == bg.pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.custom_block(event.pos, force_draw=True) 
+        #Cache cost
+        
+        
 
     def update(self, events):
 
@@ -361,10 +419,19 @@ class algorithm_scene(bg.background):
         self.previous_mouse_pos = mouse_pos
 
         if 0 <= x < len(self.map_data[0]) and 0 <= y < len(self.map_data):
-            if self.map_data[y][x] == '1':
+            if self.map_data[y][x] in ['1', '2', '3']:
+                # If the cell is a path, change it to a wall
                 self.map_data[y][x] = '0'
+                self.update_cost_cache(x, y, 0)
             elif self.map_data[y][x] == '0':
-                self.map_data[y][x] = '1'
+                cost_value = self.cost_original_cache.get((x, y), 1)  # Default to 1 if not found
+                if cost_value == 0: 
+                    cost_value = 1
+                self.map_data[y][x] = str(cost_value)  # Change the wall to a path with cost
+                self.update_cost_cache(x, y, cost_value)  # Update the cost cache with the new value
+ 
+            
+
             
 
            
@@ -410,11 +477,10 @@ class algorithm_scene(bg.background):
                                      (self.base_x + self.algorithm.path[state_index + 1][1] * self.cell_size + self.cell_size // 2,
                                       self.base_y + self.algorithm.path[state_index + 1][0] * self.cell_size + self.cell_size // 2), 3)
             #draw the modal
-            
+        self.render_cost_value(screen)  # Render cost values on the map    
         if self.modal.visible:
             self.modal.draw(screen)
-        self.render_metrics(screen)   
-                
+        self.render_metrics(screen)           
 
     def clean_up(self):
         glb.selected_algorithm = None
