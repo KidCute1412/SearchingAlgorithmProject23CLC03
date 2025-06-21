@@ -25,7 +25,7 @@ class IDDFS(algos.searching_algorithms):
     def step(self):
         #avoid infinite loop when there's no goals/paths
         if not self.stack and self.running and not self.found_path:
-            if len(self.visited_nodes) == self.visited_count_last_depth and self.failed_attempts == 20: #if the number of visited node remains the same and failed attempts reached 20, there's no path found
+            if len(self.visited_nodes) == self.visited_count_last_depth and self.failed_attempts == 30: #if the number of visited node remains the same and failed attempts reached 20, there's no path found
                 self.running = False
                 self.found_path = False
                 return
