@@ -245,22 +245,22 @@ class algorithm_scene(bg.background):
                 text_cost = self.font.render(f"Running{pause[self.incrementer]}", True, glb.BLACK)
             else:
                 text_cost = self.font.render(f"Total Path Cost: {self.algorithm.total_cost}", True, glb.BLACK)
-            screen.blit(text_visited, (250, 64))
+            screen.blit(text_visited, (300, 64))
             screen.blit(text_time, (14, 64))
             screen.blit(text_cost,(14, 22))
 
         # Previous algorithm stats
         if self.prev_algorithm_name and self.prev_visited_count is not 0:
             prev_y_offset = y_offset
-            text_prev_name = self.font.render(f"Previous: {self.prev_algorithm_name}", True, (120, 120, 120))
+            text_prev_name = self.font.render(f"Previous Algorithm: {self.prev_algorithm_name}", True, (120, 120, 120))
             text_prev_visited = self.font.render(f"Visited Nodes: {self.prev_visited_count}", True, (120, 120, 120))
             text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
             text_prev_cost = self.font.render(f"Total Path Cost: {self.prev_cost}", True, (120, 120, 120))
             
-            screen.blit(text_prev_name, (716, 22))
-            screen.blit(text_prev_cost, (716, 57))
+            screen.blit(text_prev_name, (680, 22))
+            screen.blit(text_prev_cost, (680, 57))
             screen.blit(text_prev_visited, (960, 92))
-            screen.blit(text_prev_time, (716, 92))
+            screen.blit(text_prev_time, (680, 92))
 
     def start_algorithm(self):
         
