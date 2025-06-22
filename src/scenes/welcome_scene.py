@@ -11,8 +11,31 @@ class welcome_scene(bg.background):
 
 
     def draw_buttons(self):
-        button1 = but.Button("Start Game", (glb.DEFAULT_SIZE[0] // 2 - 100, glb.DEFAULT_SIZE[1] // 2 - 50), (200, 50))
-        button2 = but.Button("Exit Game", (glb.DEFAULT_SIZE[0] // 2 - 100, glb.DEFAULT_SIZE[1] // 2 + 10), (200, 50))
+        button1 = but.Button(
+            text="Start",
+            position=(374, 489),
+            size=(190, 72),
+            main_color=glb.MINT,
+            color_hovered=glb.lighten_color(glb.MINT),
+            color_border=glb.MINT,
+            color_hovered_border=glb.lighten_color(glb.MINT),
+            font_size=42,
+            corner_radius=30,
+            text_color=glb.DARK_GREEN
+        )
+
+        button2 = but.Button(
+            text="Exit",
+            position=(635, 489),
+            size=(190, 72),
+            main_color=glb.YELLOW,
+            color_hovered=glb.lighten_color(glb.YELLOW),
+            color_border=glb.YELLOW,
+            color_hovered_border=glb.lighten_color(glb.YELLOW),
+            font_size=42,
+            corner_radius=30,
+            text_color=glb.DARK_BROWN
+        )        
         self.buttons.append(button1)
         self.buttons.append(button2)
     def add_function_to_button(self):

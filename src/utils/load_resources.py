@@ -5,7 +5,7 @@ map = {}
 def load_images():
     global images
     #welcome_background
-    welcome_background = pygame.image.load('assets/images/welcome_background.jpg')
+    welcome_background = pygame.image.load('assets/images/landing.png')
     welcome_background = pygame.transform.scale(welcome_background, glb.DEFAULT_SIZE)
 
 

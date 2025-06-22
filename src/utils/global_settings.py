@@ -8,7 +8,7 @@ selected_algorithm = None       # Currently running or last-run algorithm
 pending_algorithm = None        # Selected in dropdown but not started yet
 
 DEFAULT_SIZE = (1200, 800)
-
+font_path = "assets/fonts/SpaceGrotesk.ttf"
 # DEFINED COLORS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -17,16 +17,27 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 PINK = (255, 105, 180)
 
+DARK_BROWN = (50, 36, 0)
+MINT = (102, 233, 168)
+YELLOW = (250, 213, 113)
+UBE = (249, 198, 247)
+DARK_PURPLE = (76, 11, 74)
+DARK_GREEN = (0, 47, 24)
+
+
 WALL_COLOR = (100, 255, 255)   # Wall color
-START_COLOR = (0, 255, 100)    # Start point color
-END_COLOR = (255, 0, 100)      # End point color
+START_COLOR = (102, 233, 168)    # Start point color
+END_COLOR = (203, 168, 214)      # End point color
 PATH_COLOR = (255, 255, 255)   # Path color
 VISITED_COLOR = (255, 100, 100)  # Visited cell color
-FOUND_COLOR = (200, 255, 150)  # Found path color
+FOUND_COLOR = YELLOW # Found path color
 LINE_COLOR = (0, 100, 255)     # Line color for path visualization
 
 # Supported Algorithms
 ALGORITHMS = ["DFS", "BFS", "A*", "Beam Search", "IDDFS", "UCS", "Bi-Directional Search", "IDA*"]
+
+#Modes
+MAPS = ["Randomize", "Narrow", "Room"]
 
 # Map Settings
 MAP_ROWS = 20
@@ -236,3 +247,11 @@ def choose_algorithm(algorithm_name):
         print(f"Pending algorithm set to: {pending_algorithm}")
     else:
         print(f"Algorithm '{algorithm_name}' is not available. Please choose from {ALGORITHMS}.")
+
+def choose_map(map_name):
+    global pending_map
+    if map_name in MAPS:
+        pending_map = map_name
+        print(f"Pending map set to: {pending_map}")
+    else:
+        print(f"Map '{map_name}' is not available. Please choose from {MAPS}.")

@@ -63,7 +63,7 @@ class algorithm_scene(bg.background):
         self.paused_total_time = 0
         self.pause_time = None
         self.is_paused = False
-        self.font = None  # Font for rendering metrics
+        self.font = bg.pygame.font.Font(glb.font_path, 24)
 
         # Cache
         self.cost_value_display = {}  # Dictionary to hold cost text surfaces
@@ -150,18 +150,68 @@ class algorithm_scene(bg.background):
 
     def draw_buttons(self):
     
-        button1 = but.Button("Start Algorithm", (glb.DEFAULT_SIZE[0] // 2 - 100, 0), (200, 50))
-        button2 = but.Button("Exit", (glb.DEFAULT_SIZE[0] - 200, 0), (200, 50))
-        button3 = but.Button("Randomize Map", (0, 0), (200, 50))
-        button4 = but.Button("Narrow Map", (0, 50), (200, 50))
-        button5 = but.Button("Room Map", (200, 0), (200, 50))
-        menu = but.DropDownMenu("Select Algorithm", glb.ALGORITHMS, (100, 125), (300, 50))
+        button1 = but.Button("Start",
+                            position=(855, 126), 
+                            size=(137, 52),
+                            main_color=glb.MINT,
+                            color_hovered=glb.lighten_color(glb.MINT),
+                            color_border=glb.MINT,
+                            color_hovered_border=glb.lighten_color(glb.MINT),
+                            font_size=30,
+                            corner_radius=22,
+                            text_color=glb.DARK_GREEN)
+
+        button2 = but.Button("Reset",
+                            position=(1021, 126), 
+                            size=(137, 52),
+                            main_color=glb.UBE,
+                            color_hovered=glb.lighten_color(glb.UBE),
+                            color_border=glb.UBE,
+                            color_hovered_border=glb.lighten_color(glb.UBE),
+                            font_size=30,
+                            corner_radius=22,
+                            text_color=glb.DARK_PURPLE)
+        # button3 = but.Button("Randomize Map", (0, 0), (200, 50))
+        # button4 = but.Button("Narrow Map", (0, 50), (200, 50))
+        # button5 = but.Button("Room Map", (200, 0), (200, 50))
+
+        maps = but.DropDownMenu(main_text="Modes", 
+                                options_text=glb.MAPS,
+                                position=(20, 110),
+                                size=(200, 52),
+                                main_color=glb.YELLOW,
+                                color_hovered=glb.lighten_color(glb.YELLOW, 0.3),
+                                color_border=glb.YELLOW,
+                                color_hovered_border=glb.lighten_color(glb.YELLOW, 0.3),
+                                font_size=25,
+                                corner_radius=10,
+                                text_color=glb.DARK_BROWN,
+                                alt="Select a mode"
+                                )
+
+        menu = but.DropDownMenu(
+            main_text="Algorithms",
+            options_text=glb.ALGORITHMS,
+            position=(250, 106),
+            size=(300, 60),
+            main_color=glb.YELLOW,
+            color_hovered=glb.lighten_color(glb.YELLOW, 0.3),
+            color_border=glb.YELLOW,
+            color_hovered_border=glb.lighten_color(glb.YELLOW, 0.3),
+            font_size=25,
+            corner_radius=10,
+            text_color=glb.DARK_BROWN,
+            alt="Select an algorithm"
+        )
+
         self.buttons.append(button1)
         self.buttons.append(button2)
-        self.buttons.append(button3)
-        self.buttons.append(button4)
-        self.buttons.append(button5)
+        # self.buttons.append(button3)
+        # self.buttons.append(button4)
+        # self.buttons.append(button5)
         self.buttons.append(menu)
+        self.buttons.append(maps)
+
 
 
 
@@ -195,9 +245,9 @@ class algorithm_scene(bg.background):
                 text_cost = self.font.render(f"Running{pause[self.incrementer]}", True, glb.BLACK)
             else:
                 text_cost = self.font.render(f"Total Path Cost: {self.algorithm.total_cost}", True, glb.BLACK)
-            screen.blit(text_visited, text_visited.get_rect(center=(screen_width // 2, y_offset + 30)))
-            screen.blit(text_time, text_time.get_rect(center=(screen_width // 2, y_offset + 60)))
-            screen.blit(text_cost, text_cost.get_rect(center=(screen_width // 2, y_offset)))
+            screen.blit(text_visited, (250, 64))
+            screen.blit(text_time, (14, 64))
+            screen.blit(text_cost,(14, 22))
 
         # Previous algorithm stats
         if self.prev_algorithm_name and self.prev_visited_count is not 0:
@@ -207,10 +257,10 @@ class algorithm_scene(bg.background):
             text_prev_time = self.font.render(f"Elapsed Time: {self.prev_elapsed_time:.2f} s", True, (120, 120, 120))
             text_prev_cost = self.font.render(f"Total Path Cost: {self.prev_cost}", True, (120, 120, 120))
             
-            screen.blit(text_prev_name, text_prev_name.get_rect(center=(screen_width // 2 + 300, prev_y_offset - 30)))
-            screen.blit(text_prev_cost, text_prev_cost.get_rect(center=(screen_width // 2 + 300, prev_y_offset)))
-            screen.blit(text_prev_visited, text_prev_visited.get_rect(center=(screen_width // 2 + 300, prev_y_offset + 30)))
-            screen.blit(text_prev_time, text_prev_time.get_rect(center=(screen_width // 2 + 300, prev_y_offset + 60)))
+            screen.blit(text_prev_name, (716, 22))
+            screen.blit(text_prev_cost, (716, 57))
+            screen.blit(text_prev_visited, (960, 92))
+            screen.blit(text_prev_time, (716, 92))
 
     def start_algorithm(self):
         
@@ -241,17 +291,20 @@ class algorithm_scene(bg.background):
     def add_function_to_button(self):
         self.buttons[0].call_back = lambda: self.start_algorithm()
         self.buttons[1].call_back = lambda: glb.return_scene('welcome_scene')
-        self.buttons[2].call_back = lambda: glb.randomize_map_data()
-        self.buttons[3].call_back = lambda: glb.generate_maze_prim()
-        self.buttons[4].call_back = lambda: glb.generate_maze_recursive_division()
-        self.buttons[5].add_function_to_button(0, lambda: glb.choose_algorithm('DFS'))
-        self.buttons[5].add_function_to_button(1, lambda: glb.choose_algorithm('BFS'))
-        self.buttons[5].add_function_to_button(2, lambda: glb.choose_algorithm('A*'))
-        self.buttons[5].add_function_to_button(3, lambda: glb.choose_algorithm('Beam Search'))
-        self.buttons[5].add_function_to_button(4, lambda: glb.choose_algorithm('IDDFS'))
-        self.buttons[5].add_function_to_button(5, lambda: glb.choose_algorithm('UCS'))
-        self.buttons[5].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
-        self.buttons[5].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
+        # self.buttons[2].call_back = lambda: glb.randomize_map_data()
+        # self.buttons[3].call_back = lambda: glb.generate_maze_prim()
+        # self.buttons[4].call_back = lambda: glb.generate_maze_recursive_division()
+        self.buttons[2].add_function_to_button(0, lambda: glb.choose_algorithm('DFS'))
+        self.buttons[2].add_function_to_button(1, lambda: glb.choose_algorithm('BFS'))
+        self.buttons[2].add_function_to_button(2, lambda: glb.choose_algorithm('A*'))
+        self.buttons[2].add_function_to_button(3, lambda: glb.choose_algorithm('Beam Search'))
+        self.buttons[2].add_function_to_button(4, lambda: glb.choose_algorithm('IDDFS'))
+        self.buttons[2].add_function_to_button(5, lambda: glb.choose_algorithm('UCS'))
+        self.buttons[2].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
+        self.buttons[2].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
+        self.buttons[3].add_function_to_button(0, lambda: glb.randomize_map_data())               # Randomize Map
+        self.buttons[3].add_function_to_button(1, lambda: glb.generate_maze_prim())               # Narrow Map
+        self.buttons[3].add_function_to_button(2, lambda: glb.generate_maze_recursive_division()) # Room Map
 
     def stop_algorithm_function(self):
         self.stop_algorithm = not self.stop_algorithm
@@ -269,10 +322,10 @@ class algorithm_scene(bg.background):
             self.modal_shown = True
             
     def select_in_menu(self):
-        for algorithm_button in self.buttons[5].options:
+        for algorithm_button in self.buttons[2].options:
             if algorithm_button.is_called:
                 # CHANGE BUTTON TEXT AND FUNCTION
-                self.buttons[0].text = "Start Algorithm"
+                self.buttons[0].text = "Start"
                 self.buttons[0].call_back = lambda: self.start_algorithm()
 
                 if self.prev_algo_done:
@@ -296,33 +349,44 @@ class algorithm_scene(bg.background):
                 break
     
     def handle_randomize(self):
-        if self.buttons[2].is_called or self.buttons[3].is_called or self.buttons[4].is_called: # reset the map (randomize)
+        for idx, option in enumerate(self.buttons[3].options):
+            if option.is_called:
+                # Gọi hàm tương ứng với chỉ số
+                if idx == 0:
+                    glb.randomize_map_data()
+                elif idx == 1:
+                    glb.generate_maze_prim()
+                elif idx == 2:
+                    glb.generate_maze_recursive_division()
+                #reset map sau khi thay đổi
+                self.map_data = glb.CURRENT_MAP
+                self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
+                self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
+                self.previous_mouse_pos = None
+                self.prev_algorithm_name = None
+                self.prev_visited_count = None
+                self.prev_elapsed_time = None
+                # CHANGE BUTTON TEXT AND FUNCTION
+                self.buttons[0].text = "Start"
+                self.buttons[0].call_back = lambda: self.start_algorithm()
+                # Reset time states
+                self.elapsed = 0.0
+                self.paused_total_time = 0.0
+                self.is_paused = False
+                self.pause_time = None
+                self.stop_algorithm = False
+                # Reset modal
+                self.modal.visible = False
+                self.modal_shown = False
+                # Reset the algorithm
+                self.algorithm = None
+                # Cache cost
+                self.cost_original_cache.clear()
+                self.cost_cache.clear()  # Clear the cache to redraw costs
+                self.load_cache_cost()  # Reload the cache with the new map data
 
-            self.map_data = glb.CURRENT_MAP
-            self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
-            self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
-            self.previous_mouse_pos = None
-            self.prev_algorithm_name = None
-            self.prev_visited_count = None
-            self.prev_elapsed_time = None
-            # CHANGE BUTTON TEXT AND FUNCTION
-            self.buttons[0].text = "Start Algorithm"
-            self.buttons[0].call_back = lambda: self.start_algorithm()
-            # Reset time states
-            self.elapsed = 0.0
-            self.paused_total_time = 0.0
-            self.is_paused = False
-            self.pause_time = None
-            self.stop_algorithm = False
-            # Reset modal
-            self.modal.visible = False
-            self.modal_shown = False
-            # Reset the algorithm
-            self.algorithm = None
-            # Cache cost
-            self.cost_original_cache.clear()
-            self.cost_cache.clear()  # Clear the cache to redraw costs
-            self.load_cache_cost()  # Reload the cache with the new map data
+                option.is_called = False
+                break
             
             
     def handle_custom_block(self, events):
@@ -395,7 +459,7 @@ class algorithm_scene(bg.background):
                     self.pause_time = None 
                 
         if self.algorithm and (self.algorithm.path or self.modal.visible):
-                self.buttons[0].text = "Restart Algorithm"
+                self.buttons[0].text = "Restart"
                 self.buttons[0].call_back = lambda: self.start_algorithm()     
                  
 
