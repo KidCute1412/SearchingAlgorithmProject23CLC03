@@ -26,7 +26,7 @@ class algorithm_scene(bg.background):
         self.draw_buttons()
         self.add_function_to_button()
         self.background_image = None
-        self.modal = modal.Modal("No path was found!")
+        self.modal = modal.Modal("Search failed!")
         self.modal_shown = False  
         self.ignore_next_click = False
         self.last_algorithm_select_time = 0.0
@@ -151,8 +151,8 @@ class algorithm_scene(bg.background):
     def draw_buttons(self):
     
         button1 = but.Button("Start",
-                            position=(718, 126), 
-                            size=(140, 52),
+                            position=(700, 126), 
+                            size=(150, 52),
                             main_color=glb.MINT,
                             color_hovered=glb.lighten_color(glb.MINT),
                             color_border=glb.MINT,
@@ -162,7 +162,7 @@ class algorithm_scene(bg.background):
                             text_color=glb.DARK_GREEN)
 
         button2 = but.Button("Return",
-                            position=(1021, 126), 
+                            position=(1027, 126), 
                             size=(137, 52),
                             main_color=glb.UBE,
                             color_hovered=glb.lighten_color(glb.UBE),
@@ -174,10 +174,10 @@ class algorithm_scene(bg.background):
         button3 = but.Button("Reset",
                             position=(870, 126), 
                             size=(137, 52),
-                            main_color=glb.YELLOW,
-                            color_hovered=glb.lighten_color(glb.YELLOW),
-                            color_border=glb.YELLOW,
-                            color_hovered_border=glb.lighten_color(glb.YELLOW),
+                            main_color=glb.UBE,
+                            color_hovered=glb.lighten_color(glb.UBE),
+                            color_border=glb.UBE,
+                            color_hovered_border=glb.lighten_color(glb.UBE),
                             font_size=30,
                             corner_radius=22,
                             text_color=glb.DARK_PURPLE)
