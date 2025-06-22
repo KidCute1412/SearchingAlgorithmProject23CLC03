@@ -24,7 +24,7 @@ class Modal:
             color_hovered=glb.lighten_color(glb.UBE),
             color_border=glb.UBE,
             color_hovered_border=glb.lighten_color(glb.UBE),
-            text_color=glb.DARK_PURPLE,
+            text_color=glb.BLACK,
             call_back=self.hide)  # call the reference value
         self.visible = False
             # Tạo surface với alpha (để bo góc trong suốt)
@@ -38,8 +38,9 @@ class Modal:
             return
         
         self.surface.fill((0, 0, 0, 0))  # Transparent background
-        pygame.draw.rect(self.surface, self.color, self.surface.get_rect(), border_radius=self.corner_radius)        # Render message
-        text = self.font.render(self.message, True, glb.DARK_PURPLE)        
+        pygame.draw.rect(self.surface, self.color, self.surface.get_rect(), border_radius=self.corner_radius)   
+        # Render message
+        text = self.font.render(self.message, True, glb.BLACK)        
         text_rect = text.get_rect(center=(self.width // 2, self.height // 2 - 20))
         self.surface.blit(text, text_rect)
         self.close_button.draw(self.surface)

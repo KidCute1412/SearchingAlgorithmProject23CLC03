@@ -50,6 +50,8 @@ def reset_map_data():
     map_data = [['1' for _ in range(MAP_COLS)] for _ in range(MAP_ROWS)]
     map_data[0][0] = 'S'  # Set the start point
     map_data[-1][-1] = 'E'  # Set the end point
+    global CURRENT_MAP 
+    CURRENT_MAP = map_data
     return map_data
 
 def randomize_map_data():

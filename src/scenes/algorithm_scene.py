@@ -26,7 +26,7 @@ class algorithm_scene(bg.background):
         self.draw_buttons()
         self.add_function_to_button()
         self.background_image = None
-        self.modal = modal.Modal("No path was found!")
+        self.modal = modal.Modal("Search failed!")
         self.modal_shown = False  
         self.ignore_next_click = False
         self.last_algorithm_select_time = 0.0
@@ -151,8 +151,8 @@ class algorithm_scene(bg.background):
     def draw_buttons(self):
     
         button1 = but.Button("Start",
-                            position=(855, 126), 
-                            size=(137, 52),
+                            position=(700, 126), 
+                            size=(150, 52),
                             main_color=glb.MINT,
                             color_hovered=glb.lighten_color(glb.MINT),
                             color_border=glb.MINT,
@@ -162,7 +162,7 @@ class algorithm_scene(bg.background):
                             text_color=glb.DARK_GREEN)
 
         button2 = but.Button("Return",
-                            position=(1021, 126), 
+                            position=(1027, 126), 
                             size=(137, 52),
                             main_color=glb.UBE,
                             color_hovered=glb.lighten_color(glb.UBE),
@@ -171,14 +171,23 @@ class algorithm_scene(bg.background):
                             font_size=30,
                             corner_radius=22,
                             text_color=glb.DARK_PURPLE)
-        # button3 = but.Button("Randomize Map", (0, 0), (200, 50))
+        button3 = but.Button("Reset",
+                            position=(870, 126), 
+                            size=(137, 52),
+                            main_color=glb.UBE,
+                            color_hovered=glb.lighten_color(glb.UBE),
+                            color_border=glb.UBE,
+                            color_hovered_border=glb.lighten_color(glb.UBE),
+                            font_size=30,
+                            corner_radius=22,
+                            text_color=glb.DARK_PURPLE)
         # button4 = but.Button("Narrow Map", (0, 50), (200, 50))
         # button5 = but.Button("Room Map", (200, 0), (200, 50))
 
         maps = but.DropDownMenu(main_text="Modes", 
                                 options_text=glb.MAPS,
                                 position=(20, 110),
-                                size=(200, 52),
+                                size=(200, 60),
                                 main_color=glb.YELLOW,
                                 color_hovered=glb.lighten_color(glb.YELLOW, 0.3),
                                 color_border=glb.YELLOW,
@@ -192,7 +201,7 @@ class algorithm_scene(bg.background):
         menu = but.DropDownMenu(
             main_text="Algorithms",
             options_text=glb.ALGORITHMS,
-            position=(250, 106),
+            position=(250, 110),
             size=(300, 60),
             main_color=glb.YELLOW,
             color_hovered=glb.lighten_color(glb.YELLOW, 0.3),
@@ -206,11 +215,10 @@ class algorithm_scene(bg.background):
 
         self.buttons.append(button1)
         self.buttons.append(button2)
-        # self.buttons.append(button3)
-        # self.buttons.append(button4)
-        # self.buttons.append(button5)
         self.buttons.append(menu)
         self.buttons.append(maps)
+        self.buttons.append(button3)
+
 
 
 
@@ -291,9 +299,6 @@ class algorithm_scene(bg.background):
     def add_function_to_button(self):
         self.buttons[0].call_back = lambda: self.start_algorithm()
         self.buttons[1].call_back = lambda: glb.return_scene('welcome_scene')
-        # self.buttons[2].call_back = lambda: glb.randomize_map_data()
-        # self.buttons[3].call_back = lambda: glb.generate_maze_prim()
-        # self.buttons[4].call_back = lambda: glb.generate_maze_recursive_division()
         self.buttons[2].add_function_to_button(0, lambda: glb.choose_algorithm('DFS'))
         self.buttons[2].add_function_to_button(1, lambda: glb.choose_algorithm('BFS'))
         self.buttons[2].add_function_to_button(2, lambda: glb.choose_algorithm('A*'))
@@ -305,7 +310,7 @@ class algorithm_scene(bg.background):
         self.buttons[3].add_function_to_button(0, lambda: glb.randomize_map_data())               # Randomize Map
         self.buttons[3].add_function_to_button(1, lambda: glb.generate_maze_prim())               # Narrow Map
         self.buttons[3].add_function_to_button(2, lambda: glb.generate_maze_recursive_division()) # Room Map
-
+        self.buttons[4].call_back = lambda: glb.reset_map_data()
     def stop_algorithm_function(self):
         self.stop_algorithm = not self.stop_algorithm
 
@@ -387,6 +392,34 @@ class algorithm_scene(bg.background):
 
                 option.is_called = False
                 break
+        if self.buttons[4].is_called:
+            glb.reset_map_data()
+            self.map_data = glb.CURRENT_MAP
+            self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
+            self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
+            self.previous_mouse_pos = None
+            self.prev_algorithm_name = None
+            self.prev_visited_count = None
+            self.prev_elapsed_time = None
+            # CHANGE BUTTON TEXT AND FUNCTION
+            self.buttons[0].text = "Start"
+            self.buttons[0].call_back = lambda: self.start_algorithm()
+            # Reset time states
+            self.elapsed = 0.0
+            self.paused_total_time = 0.0
+            self.is_paused = False
+            self.pause_time = None
+            self.stop_algorithm = False
+            # Reset modal
+            self.modal.visible = False
+            self.modal_shown = False
+            # Reset the algorithm
+            self.algorithm = None
+            # Cache cost
+            self.cost_original_cache.clear()
+            self.cost_cache.clear()  # Clear the cache to redraw costs
+            self.load_cache_cost()  # Reload the cache with the new map data
+
             
             
     def handle_custom_block(self, events):
