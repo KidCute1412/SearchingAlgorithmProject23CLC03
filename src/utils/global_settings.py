@@ -26,12 +26,12 @@ DARK_GREEN = (0, 47, 24)
 
 
 WALL_COLOR = (100, 255, 255)   # Wall color
-START_COLOR = (102, 233, 168)    # Start point color
+START_COLOR = (102, 255, 168)    # Start point color
 END_COLOR = (203, 168, 214)      # End point color
 PATH_COLOR = (255, 255, 255)   # Path color
-VISITED_COLOR = (255, 100, 100)  # Visited cell color
-FOUND_COLOR = YELLOW # Found path color
-LINE_COLOR = (0, 100, 255)     # Line color for path visualization
+VISITED_COLOR = (255, 100, 150, 0.5)  # Visited cell color
+FOUND_COLOR =(255, 250, 140, 0.8)# Found path color
+LINE_COLOR = (210, 70, 100)  # Line color for path visualization
 
 # Supported Algorithms
 ALGORITHMS = ["DFS", "BFS", "A*", "Beam Search", "IDDFS", "UCS", "Bi-Directional Search", "IDA*"]
@@ -116,9 +116,9 @@ def generate_maze_prim():
             wall_x = (x1 + x2) // 2
             wall_y = (y1 + y2) // 2
             ramdom_value = random.random()
-            if ramdom_value < 0.5:
+            if ramdom_value < 0.7:
                 map_data[wall_y][wall_x] = '1'
-            elif ramdom_value < 0.8:
+            elif ramdom_value < 0.9:
                 map_data[wall_y][wall_x] = '2'
             else:
                 map_data[wall_y][wall_x] = '3'        

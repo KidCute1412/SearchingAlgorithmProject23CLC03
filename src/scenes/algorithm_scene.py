@@ -161,7 +161,7 @@ class algorithm_scene(bg.background):
                             corner_radius=22,
                             text_color=glb.DARK_GREEN)
 
-        button2 = but.Button("Reset",
+        button2 = but.Button("Return",
                             position=(1021, 126), 
                             size=(137, 52),
                             main_color=glb.UBE,

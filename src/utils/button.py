@@ -94,7 +94,7 @@ class DropDownMenu:
                         text_color=text_color)
                         for i, text in enumerate(options_text)]
         self.is_open = False
-        self.prev_name_main_button = None
+        self.prev_name_main_button = main_text
         self.alt = alt
 
     def toggle(self):
