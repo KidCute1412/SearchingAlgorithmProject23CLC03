@@ -392,6 +392,34 @@ class algorithm_scene(bg.background):
 
                 option.is_called = False
                 break
+        if self.buttons[4].is_called:
+            glb.reset_map_data()
+            self.map_data = glb.CURRENT_MAP
+            self.base_x = (glb.DEFAULT_SIZE[0] - len(self.map_data[0]) * self.cell_size) // 2
+            self.base_y = (glb.DEFAULT_SIZE[1] - len(self.map_data) * self.cell_size)
+            self.previous_mouse_pos = None
+            self.prev_algorithm_name = None
+            self.prev_visited_count = None
+            self.prev_elapsed_time = None
+            # CHANGE BUTTON TEXT AND FUNCTION
+            self.buttons[0].text = "Start"
+            self.buttons[0].call_back = lambda: self.start_algorithm()
+            # Reset time states
+            self.elapsed = 0.0
+            self.paused_total_time = 0.0
+            self.is_paused = False
+            self.pause_time = None
+            self.stop_algorithm = False
+            # Reset modal
+            self.modal.visible = False
+            self.modal_shown = False
+            # Reset the algorithm
+            self.algorithm = None
+            # Cache cost
+            self.cost_original_cache.clear()
+            self.cost_cache.clear()  # Clear the cache to redraw costs
+            self.load_cache_cost()  # Reload the cache with the new map data
+
             
             
     def handle_custom_block(self, events):
