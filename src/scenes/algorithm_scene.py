@@ -452,7 +452,9 @@ class algorithm_scene(bg.background):
             if self.modal.rect.collidepoint(mouse_pos):
                 self.ignore_next_click = True  # Ignore clicks while modal is open
         
-        
+        if  self.buttons[4].is_called:
+            self.buttons[3].prev_name_main_button = "Modes"
+
         #RANDOMIZE MAP
         self.handle_randomize()
         
