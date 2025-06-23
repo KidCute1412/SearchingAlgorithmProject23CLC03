@@ -334,6 +334,7 @@ class algorithm_scene(bg.background):
                 self.buttons[0].call_back = lambda: self.start_algorithm()
 
                 if self.prev_algo_done:
+    
                     self.prev_algorithm_name = glb.selected_algorithm  # Save BEFORE it changes
                     self.prev_visited_count = getattr(self.algorithm, 'visited_count', len(self.algorithm.visited_nodes))
                     self.prev_elapsed_time = self.elapsed
@@ -385,6 +386,7 @@ class algorithm_scene(bg.background):
                 self.modal_shown = False
                 # Reset the algorithm
                 self.algorithm = None
+                self.prev_algo_done = False
                 # Cache cost
                 self.cost_original_cache.clear()
                 self.cost_cache.clear()  # Clear the cache to redraw costs
@@ -415,6 +417,7 @@ class algorithm_scene(bg.background):
             self.modal_shown = False
             # Reset the algorithm
             self.algorithm = None
+            self.prev_algo_done = False
             # Cache cost
             self.cost_original_cache.clear()
             self.cost_cache.clear()  # Clear the cache to redraw costs
