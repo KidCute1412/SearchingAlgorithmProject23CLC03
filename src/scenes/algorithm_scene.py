@@ -307,7 +307,7 @@ class algorithm_scene(bg.background):
         self.buttons[2].add_function_to_button(5, lambda: glb.choose_algorithm('UCS'))
         self.buttons[2].add_function_to_button(6, lambda: glb.choose_algorithm('Bi-Directional Search'))
         self.buttons[2].add_function_to_button(7, lambda: glb.choose_algorithm('IDA*'))
-        self.buttons[3].add_function_to_button(0, lambda: glb.randomize_map_data())               # Randomize Map
+        self.buttons[3].add_function_to_button(0, lambda: glb.custom_map_data())               # Randomize Map
         self.buttons[3].add_function_to_button(1, lambda: glb.generate_maze_prim())               # Narrow Map
         self.buttons[3].add_function_to_button(2, lambda: glb.generate_maze_recursive_division()) # Room Map
         self.buttons[4].call_back = lambda: glb.reset_map_data()
@@ -359,7 +359,7 @@ class algorithm_scene(bg.background):
             if option.is_called:
                 # Gọi hàm tương ứng với chỉ số
                 if idx == 0:
-                    glb.randomize_map_data()
+                    glb.custom_map_data()
                 elif idx == 1:
                     glb.generate_maze_prim()
                 elif idx == 2:

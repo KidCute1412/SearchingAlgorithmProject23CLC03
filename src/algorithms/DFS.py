@@ -7,6 +7,7 @@ class DFS(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
         self.delay_time = 50  # delay time in milliseconds for visualization
+
     def start(self):
         super().start()
         self.stack = [node.Node(self.maze.initial_state())]
@@ -17,21 +18,31 @@ class DFS(algos.searching_algorithms):
             self.found_path = False
             self.running = False
             return
+
         current_node = self.stack.pop()
+
         if current_node.state in self.visited_nodes:
             return
-        bg.pygame.time.delay(self.delay_time)  # Add a delay to visualize the DFS process
+
+        bg.pygame.time.delay(self.delay_time)  # Visual delay
         self.visited_nodes.add(current_node.state)
         self.visited_count += 1
-        # found goal
+
         if self.maze.is_goal_state(current_node.state):
             self.found_path = True
             self.running = False
             self.reconstruct_path(current_node)
-            
-        
-        for neighbor, direction, cost in self.maze.get_neighbors(current_node.state):
-            if neighbor not in self.visited_nodes:
-                self.stack.append(node.Node(neighbor, current_node, path_cost=current_node.path_cost + cost))
+            return
+
+        # Get and sort neighbors by priority: RIGHT, DOWN, LEFT, UP
+        neighbors = self.maze.get_neighbors(current_node.state)
+        direction_priority = ['RIGHT', 'DOWN', 'LEFT', 'UP']
+        neighbors.sort(key=lambda x: direction_priority.index(x[1]))
+
+        # Reverse order for DFS so that RIGHT is popped first
+        for neighbor_state, direction, cost in reversed(neighbors):
+            if neighbor_state not in self.visited_nodes:
+                self.stack.append(node.Node(neighbor_state, current_node, path_cost=current_node.path_cost + cost))
+
         
 
