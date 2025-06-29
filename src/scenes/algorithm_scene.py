@@ -142,7 +142,7 @@ class algorithm_scene(bg.background):
                 # Draw the cell
                 bg.pygame.draw.rect(screen, color, rect)
                 # Draw the border
-                bg.pygame.draw.rect(screen, glb.BLACK, rect, 1)
+                #bg.pygame.draw.rect(screen, glb.BLACK, rect, 1)
                 # draw cost text
         # Draw the cost values on the map
         self.render_cost_value(screen)
@@ -550,9 +550,9 @@ class algorithm_scene(bg.background):
                                                      self.base_y + state[0] * self.cell_size,
                                                      self.cell_size, self.cell_size))
             # Draw the border around the visited state
-            bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,
-                                                     self.base_y + state[0] * self.cell_size,
-                                                     self.cell_size, self.cell_size), 1)
+            # bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,
+            #                                          self.base_y + state[0] * self.cell_size,
+            #                                          self.cell_size, self.cell_size), 1)
             
         if self.algorithm.path:
             self.prev_algo_done = True
@@ -564,9 +564,9 @@ class algorithm_scene(bg.background):
                                                              self.base_y + state[0] * self.cell_size,
                                                              self.cell_size, self.cell_size))
                 # Draw the border around the found path state
-                bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,    
-                                                         self.base_y + state[0] * self.cell_size,
-                                                         self.cell_size, self.cell_size), 1)
+                # bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,    
+                #                                          self.base_y + state[0] * self.cell_size,
+                #                                          self.cell_size, self.cell_size), 1)
                
                 
             

@@ -25,9 +25,9 @@ DARK_PURPLE = (76, 11, 74)
 DARK_GREEN = (0, 47, 24)
 
 
-WALL_COLOR = (100, 255, 255)   # Wall color
+WALL_COLOR = BLACK #(100, 255, 255)   # Wall color
 START_COLOR = (102, 255, 168)    # Start point color
-END_COLOR = (203, 168, 214)      # End point color
+END_COLOR =   (203, 168, 214)      # End point color
 PATH_COLOR = (255, 255, 255)   # Path color
 VISITED_COLOR = (255, 100, 150, 0.5)  # Visited cell color
 FOUND_COLOR =(255, 250, 140, 0.8)# Found path color
