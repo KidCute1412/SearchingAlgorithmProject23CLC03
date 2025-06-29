@@ -40,9 +40,9 @@ ALGORITHMS = ["DFS", "BFS", "A*", "Beam Search", "IDDFS", "UCS", "Bi-Directional
 MAPS = ["Randomize", "Narrow", "Room"]
 
 # Map Settings
-MAP_ROWS = 20
+MAP_ROWS = 21
 MAP_COLS = 40
-CELL_SIZE = 30
+CELL_SIZE = 28
 CURRENT_MAP = None
 
 def reset_map_data():
@@ -80,7 +80,7 @@ def custom_map_data():
     "00000000000000000000000000000000"
     ]
 
-    for i in range(20): map_data[i][0:32] = string_map[i]
+    for i in range(MAP_ROWS): map_data[i][0:32] = string_map[i]
     map_data[9][0] = 'S'
     map_data[11][31] = 'E'
     global CURRENT_MAP 
