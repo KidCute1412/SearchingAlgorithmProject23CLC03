@@ -2,7 +2,7 @@ from os import path
 import algorithms.Node as node
 import algorithms.Algorithms as algos
 import scenes.background as bg
-
+#
 class BS(algos.searching_algorithms):
     def __init__(self, beam_width=2):
         super().__init__()

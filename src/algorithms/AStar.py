@@ -19,6 +19,7 @@ class AStar(algos.searching_algorithms):
     def start(self):
         super().start()
         self.open_set.add(node.Node(self.maze.initial_state()))
+        self.max_size = len(self.open_set)
         return None
 
     def step(self):
@@ -61,3 +62,4 @@ class AStar(algos.searching_algorithms):
                 self.open_set.add(neighbor_node)
         
         self.closed_set.add(current_node.state)
+        self.max_size = max(self.max_size, len(self.open_set))

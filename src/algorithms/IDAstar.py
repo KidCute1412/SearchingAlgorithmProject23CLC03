@@ -97,3 +97,4 @@ class IDAStar(algos.searching_algorithms):
                 heuristic=self.maze.heuristic(neighbor_state)
             )
             self.stack.append((neighbor_node, new_cost))
+        self.max_size = max(self.max_size, len(self.stack))
