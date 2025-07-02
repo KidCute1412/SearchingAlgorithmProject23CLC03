@@ -11,6 +11,7 @@ class BFS(algos.searching_algorithms):
     def start(self):
         super().start()
         self.queue = deque([node.Node(self.maze.initial_state())])
+        self.max_size = len(self.queue)
         return None
 
     def step(self):
@@ -27,6 +28,7 @@ class BFS(algos.searching_algorithms):
         bg.pygame.time.delay(self.delay_time)  # Visual delay
         self.visited_nodes.add(current_node.state)
         self.visited_count += 1
+        
 
         # Goal found
         if self.maze.is_goal_state(current_node.state):
@@ -46,6 +48,8 @@ class BFS(algos.searching_algorithms):
             if neighbor_state not in self.visited_nodes:
                 new_node = node.Node(neighbor_state, current_node, path_cost=current_node.path_cost + cost)
                 self.queue.append(new_node)
+
+        self.max_size = max(self.max_size, len(self.queue))
 
         
 

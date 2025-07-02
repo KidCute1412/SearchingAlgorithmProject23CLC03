@@ -4,7 +4,7 @@ import algorithms.Algorithms as algos
 import scenes.background as bg
 
 class BS(algos.searching_algorithms):
-    def __init__(self, beam_width=10):
+    def __init__(self, beam_width=2):
         super().__init__()
         self.beam_width = beam_width
         self.delay_time = 100  # delay time in milliseconds for visualization
@@ -14,6 +14,7 @@ class BS(algos.searching_algorithms):
     def start(self):
         super().start()
         self.queue = [node.Node(self.maze.initial_state())]
+        self.max_size = len(self.queue)
 
     def step(self):
         if not self.queue or not self.running:
@@ -45,3 +46,4 @@ class BS(algos.searching_algorithms):
     
         next_level.sort(key=lambda n: self.maze.heuristic(n.state))
         self.queue = next_level[:self.beam_width]
+        self.max_size = max(self.max_size, len(self.queue))

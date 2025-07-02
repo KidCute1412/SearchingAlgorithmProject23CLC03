@@ -26,6 +26,7 @@ class searching_algorithms:
         self.visited_count = 0
         self.cost_type = None
         self.cost_val = None
+        self.max_size = 0
         self.total_cost = 0
         self.font = bg.pygame.font.SysFont("Arial", 24)
    

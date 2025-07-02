@@ -38,8 +38,8 @@ class algorithm_scene(bg.background):
         self.map_data = glb.CURRENT_MAP
         self.colors = {
             '1': glb.PATH_COLOR,  # Path
-            '2': glb.PATH_COLOR,  # Custom color for '2'
-            '3': glb.PATH_COLOR,  # Custom color for '3'
+            '2': glb.MEDIUM_COLOR,  # Custom color for '2'
+            '3': glb.HARD_COLOR,  # Custom color for '3'
             '0': glb.WALL_COLOR,  # Wall
             'S': glb.START_COLOR,    # Start
             'E': glb.END_COLOR,  # End
@@ -142,7 +142,7 @@ class algorithm_scene(bg.background):
                 # Draw the cell
                 bg.pygame.draw.rect(screen, color, rect)
                 # Draw the border
-                #bg.pygame.draw.rect(screen, glb.BLACK, rect, 1)
+                bg.pygame.draw.rect(screen, glb.BLACK, rect, 1)
                 # draw cost text
         # Draw the cost values on the map
         self.render_cost_value(screen)
@@ -245,6 +245,7 @@ class algorithm_scene(bg.background):
 
             text_visited = self.font.render(f"Visited Nodes: {self.algorithm.visited_count}", True, glb.BLACK)
             text_time = self.font.render(f"Elapsed Time: {self.elapsed:.2f} s", True, glb.BLACK)
+            text_size = self.font.render(f"Max Size: {self.algorithm.max_size} nodes ", True, glb.BLACK)
             if self.is_paused:
                 text_cost = self.font.render(f"Paused!", True, glb.BLACK)
             elif self.modal_shown:
@@ -254,6 +255,7 @@ class algorithm_scene(bg.background):
             else:
                 text_cost = self.font.render(f"Total Path Cost: {self.algorithm.total_cost}", True, glb.BLACK)
             screen.blit(text_visited, (300, 64))
+            screen.blit(text_size, (300, 22))
             screen.blit(text_time, (14, 64))
             screen.blit(text_cost,(14, 22))
 
@@ -550,9 +552,9 @@ class algorithm_scene(bg.background):
                                                      self.base_y + state[0] * self.cell_size,
                                                      self.cell_size, self.cell_size))
             # Draw the border around the visited state
-            # bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,
-            #                                          self.base_y + state[0] * self.cell_size,
-            #                                          self.cell_size, self.cell_size), 1)
+            bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,
+                                                    self.base_y + state[0] * self.cell_size,
+                                                    self.cell_size, self.cell_size), 1)
             
         if self.algorithm.path:
             self.prev_algo_done = True
@@ -564,9 +566,9 @@ class algorithm_scene(bg.background):
                                                              self.base_y + state[0] * self.cell_size,
                                                              self.cell_size, self.cell_size))
                 # Draw the border around the found path state
-                # bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,    
-                #                                          self.base_y + state[0] * self.cell_size,
-                #                                          self.cell_size, self.cell_size), 1)
+                bg.pygame.draw.rect(screen, glb.BLACK, (self.base_x + state[1] * self.cell_size,    
+                                                         self.base_y + state[0] * self.cell_size,
+                                                          self.cell_size, self.cell_size), 1)
                
                 
             

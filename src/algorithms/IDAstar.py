@@ -6,7 +6,7 @@ import scenes.background as bg
 class IDAStar(algos.searching_algorithms):
     def __init__(self):
         super().__init__()
-        self.delay_time = 1
+        self.delay_time = 200
         self.threshold = 0
         self.next_threshold = float('inf')
         self.visited_count_last_threshold = 0
